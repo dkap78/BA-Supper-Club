@@ -17,30 +17,93 @@ import {
   Heart,
   ChevronLeft,
   ChevronRight
+  Send,
+  MessageSquare,
+  Camera,
+  Quote
 } from 'lucide-react';
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
+  const [currentGalleryImage, setCurrentGalleryImage] = useState(0);
+  const [feedbackForm, setFeedbackForm] = useState({
+    name: '',
+    email: '',
+    rating: 5,
+    message: ''
+  });
 
   const testimonials = [
     {
       name: "Priya Sharma",
       role: "Regular Guest from Jamnagar",
       content: "Ba's kitchen feels like home away from home. The warmth, the flavors, and Ba's personal touch make every meal special. It's like being invited to a dear friend's family dinner.",
-      rating: 5
+      rating: 5,
+      date: "December 2024"
     },
     {
       name: "Rajesh Patel",
       role: "Food Enthusiast",
       content: "I've never experienced such authentic, home-style cooking in a restaurant setting. Ba treats every guest like family, and you can taste the love in every dish.",
-      rating: 5
+      rating: 5,
+      date: "November 2024"
     },
     {
       name: "Meera Joshi",
       role: "Local Resident",
       content: "Ba's Kitchen has brought something truly special to Jamnagar. The intimate setting and Ba's personal care make you feel like you're dining at your grandmother's house.",
-      rating: 5
+      rating: 5,
+      date: "October 2024"
+    },
+    {
+      name: "Amit Desai",
+      role: "Business Owner",
+      content: "The Mexican night was absolutely incredible! Ba's attention to detail and the authentic flavors transported us straight to Mexico. Can't wait for the next themed dinner.",
+      rating: 5,
+      date: "September 2024"
+    },
+    {
+      name: "Kavita Singh",
+      role: "Food Blogger",
+      content: "Ba's Supper Club is a hidden gem in Jamnagar. The intimate atmosphere, exceptional food, and Ba's warm hospitality create an unforgettable dining experience.",
+      rating: 5,
+      date: "August 2024"
+    }
+  ];
+
+  const galleryImages = [
+    {
+      url: "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg",
+      title: "Mexican Night - July 2024",
+      description: "Our first Mexican themed dinner featuring authentic enchiladas and churros. 8 guests enjoyed an evening of flavors and conversation."
+    },
+    {
+      url: "https://images.pexels.com/photos/1267320/pexels-photo-1267320.jpeg",
+      title: "Italian Evening - June 2024",
+      description: "A cozy Italian dinner with homemade pasta and tiramisu. Ba's personal touch made every guest feel like family."
+    },
+    {
+      url: "https://images.pexels.com/photos/958545/pexels-photo-958545.jpeg",
+      title: "Indian Fusion Night - May 2024",
+      description: "Traditional Indian dishes with a modern twist. The intimate setting allowed for meaningful conversations over exceptional food."
+    },
+    {
+      url: "https://images.pexels.com/photos/1640772/pexels-photo-1640772.jpeg",
+      title: "Mediterranean Feast - April 2024",
+      description: "Fresh Mediterranean flavors in Ba's warm dining room. Limited to 8 guests for the perfect intimate experience."
+    },
+    {
+      url: "https://images.pexels.com/photos/1279330/pexels-photo-1279330.jpeg",
+      title: "Asian Fusion - March 2024",
+      description: "An exploration of Asian flavors with Ba's signature home-style preparation. Every dish told a story."
+    },
+    {
+      url: "https://images.pexels.com/photos/1640774/pexels-photo-1640774.jpeg",
+      title: "French Bistro Night - February 2024",
+      description: "Classic French cuisine in an intimate setting. Ba's attention to detail created an authentic bistro experience at home."
+    }
+  ];
     }
   ];
 
@@ -73,6 +136,24 @@ function App() {
     setCurrentTestimonial((prev) => (prev - 1 + testimonials.length) % testimonials.length);
   };
 
+  const nextGalleryImage = () => {
+    setCurrentGalleryImage((prev) => (prev + 1) % galleryImages.length);
+  };
+
+  const prevGalleryImage = () => {
+    setCurrentGalleryImage((prev) => (prev - 1 + galleryImages.length) % galleryImages.length);
+  };
+
+  const handleFeedbackSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Here you would typically send the feedback to a server
+    alert(`Thank you ${feedbackForm.name}! Your feedback has been submitted. Ba will personally review your message.`);
+    setFeedbackForm({ name: '', email: '', rating: 5, message: '' });
+  };
+
+  const handleFeedbackChange = (field: string, value: string | number) => {
+    setFeedbackForm(prev => ({ ...prev, [field]: value }));
+  };
   return (
     <div className="min-h-screen bg-gray-900">
       {/* Navigation */}
@@ -91,11 +172,13 @@ function App() {
             </div>
             
             <div className="hidden md:block">
-              <div className="ml-10 flex items-baseline space-x-8">
+              <div className="ml-10 flex items-baseline space-x-6">
                 <a href="#home" className="text-amber-400 hover:text-amber-300 px-3 py-2 text-sm font-medium transition-colors">Home</a>
                 <a href="#menu" className="text-gray-300 hover:text-amber-300 px-3 py-2 text-sm font-medium transition-colors">Menu</a>
                 <a href="#experience" className="text-gray-300 hover:text-amber-300 px-3 py-2 text-sm font-medium transition-colors">Experience</a>
-                <a href="#testimonials" className="text-gray-300 hover:text-amber-300 px-3 py-2 text-sm font-medium transition-colors">Reviews</a>
+                <a href="#reviews" className="text-gray-300 hover:text-amber-300 px-3 py-2 text-sm font-medium transition-colors">Reviews</a>
+                <a href="#gallery" className="text-gray-300 hover:text-amber-300 px-3 py-2 text-sm font-medium transition-colors">Gallery</a>
+                <a href="#feedback" className="text-gray-300 hover:text-amber-300 px-3 py-2 text-sm font-medium transition-colors">Feedback</a>
                 <a href="#reservations" className="text-gray-300 hover:text-amber-300 px-3 py-2 text-sm font-medium transition-colors">Reservations</a>
               </div>
             </div>
@@ -118,7 +201,9 @@ function App() {
               <a href="#home" className="text-amber-400 hover:text-amber-300 block px-3 py-2 text-base font-medium">Home</a>
               <a href="#menu" className="text-gray-300 hover:text-amber-300 block px-3 py-2 text-base font-medium">Menu</a>
               <a href="#experience" className="text-gray-300 hover:text-amber-300 block px-3 py-2 text-base font-medium">Experience</a>
-              <a href="#testimonials" className="text-gray-300 hover:text-amber-300 block px-3 py-2 text-base font-medium">Reviews</a>
+              <a href="#reviews" className="text-gray-300 hover:text-amber-300 block px-3 py-2 text-base font-medium">Reviews</a>
+              <a href="#gallery" className="text-gray-300 hover:text-amber-300 block px-3 py-2 text-base font-medium">Gallery</a>
+              <a href="#feedback" className="text-gray-300 hover:text-amber-300 block px-3 py-2 text-base font-medium">Feedback</a>
               <a href="#reservations" className="text-gray-300 hover:text-amber-300 block px-3 py-2 text-base font-medium">Reservations</a>
             </div>
           </div>
@@ -287,6 +372,304 @@ function App() {
         </div>
       </section>
 
+      {/* Reviews Section */}
+      <section id="reviews" className="py-20 bg-gray-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4">
+              What Our Guests Say
+            </h2>
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+              Hear from our cherished guests about their unforgettable experiences at Ba's Supper Club
+            </p>
+          </div>
+          
+          <div className="relative max-w-4xl mx-auto">
+            <div className="bg-gray-900 rounded-2xl p-8 md:p-12 border border-amber-600/20">
+              <div className="flex items-center justify-center mb-8">
+                <Quote className="w-12 h-12 text-amber-500" />
+              </div>
+              
+              <div className="text-center mb-8">
+                <p className="text-xl md:text-2xl text-gray-300 leading-relaxed mb-6 italic">
+                  "{testimonials[currentTestimonial].content}"
+                </p>
+                
+                <div className="flex justify-center mb-4">
+                  {[...Array(testimonials[currentTestimonial].rating)].map((_, i) => (
+                    <Star key={i} className="w-6 h-6 text-amber-400 fill-current" />
+                  ))}
+                </div>
+                
+                <div className="text-center">
+                  <h4 className="text-xl font-semibold text-white mb-1">
+                    {testimonials[currentTestimonial].name}
+                  </h4>
+                  <p className="text-amber-400 font-medium mb-1">
+                    {testimonials[currentTestimonial].role}
+                  </p>
+                  <p className="text-gray-500 text-sm">
+                    {testimonials[currentTestimonial].date}
+                  </p>
+                </div>
+              </div>
+              
+              <div className="flex justify-center items-center space-x-4">
+                <button
+                  onClick={prevTestimonial}
+                  className="p-3 bg-amber-600 hover:bg-amber-700 rounded-full text-white transition-colors"
+                >
+                  <ChevronLeft className="w-6 h-6" />
+                </button>
+                
+                <div className="flex space-x-2">
+                  {testimonials.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentTestimonial(index)}
+                      className={`w-3 h-3 rounded-full transition-colors ${
+                        index === currentTestimonial ? 'bg-amber-500' : 'bg-gray-600'
+                      }`}
+                    />
+                  ))}
+                </div>
+                
+                <button
+                  onClick={nextTestimonial}
+                  className="p-3 bg-amber-600 hover:bg-amber-700 rounded-full text-white transition-colors"
+                >
+                  <ChevronRight className="w-6 h-6" />
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <div className="text-center mt-12">
+            <div className="bg-gradient-to-r from-amber-600 to-orange-500 rounded-xl p-6 inline-block">
+              <h4 className="text-white font-semibold text-lg mb-2">Average Rating</h4>
+              <div className="flex items-center justify-center space-x-2">
+                <div className="flex">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-6 h-6 text-white fill-current" />
+                  ))}
+                </div>
+                <span className="text-white font-bold text-xl">5.0</span>
+                <span className="text-amber-100">({testimonials.length} reviews)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Gallery Section */}
+      <section id="gallery" className="py-20 bg-gray-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4">
+              Gallery of Memories
+            </h2>
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+              Take a glimpse into our past events and the magical moments created at Ba's Supper Club
+            </p>
+          </div>
+          
+          <div className="relative max-w-5xl mx-auto">
+            <div className="bg-gray-800 rounded-2xl overflow-hidden border border-amber-600/20">
+              <div className="relative h-96 md:h-[500px]">
+                <img
+                  src={galleryImages[currentGalleryImage].url}
+                  alt={galleryImages[currentGalleryImage].title}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
+                
+                <div className="absolute bottom-0 left-0 right-0 p-8">
+                  <h3 className="text-2xl md:text-3xl font-serif font-bold text-white mb-2">
+                    {galleryImages[currentGalleryImage].title}
+                  </h3>
+                  <p className="text-gray-200 text-lg leading-relaxed">
+                    {galleryImages[currentGalleryImage].description}
+                  </p>
+                </div>
+                
+                <button
+                  onClick={prevGalleryImage}
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 p-3 bg-black/50 hover:bg-black/70 rounded-full text-white transition-colors backdrop-blur-sm"
+                >
+                  <ChevronLeft className="w-6 h-6" />
+                </button>
+                
+                <button
+                  onClick={nextGalleryImage}
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 p-3 bg-black/50 hover:bg-black/70 rounded-full text-white transition-colors backdrop-blur-sm"
+                >
+                  <ChevronRight className="w-6 h-6" />
+                </button>
+              </div>
+              
+              <div className="p-6 bg-gray-800">
+                <div className="flex justify-center items-center space-x-4 mb-4">
+                  <Camera className="w-6 h-6 text-amber-500" />
+                  <span className="text-gray-300">
+                    {currentGalleryImage + 1} of {galleryImages.length}
+                  </span>
+                </div>
+                
+                <div className="flex justify-center space-x-2">
+                  {galleryImages.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentGalleryImage(index)}
+                      className={`w-3 h-3 rounded-full transition-colors ${
+                        index === currentGalleryImage ? 'bg-amber-500' : 'bg-gray-600'
+                      }`}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mt-12">
+            {galleryImages.map((image, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentGalleryImage(index)}
+                className={`relative h-24 rounded-lg overflow-hidden transition-all ${
+                  index === currentGalleryImage 
+                    ? 'ring-4 ring-amber-500 scale-105' 
+                    : 'hover:scale-105 opacity-70 hover:opacity-100'
+                }`}
+              >
+                <img
+                  src={image.url}
+                  alt={image.title}
+                  className="w-full h-full object-cover"
+                />
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Feedback Section */}
+      <section id="feedback" className="py-20 bg-gray-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4">
+              Share Your Experience
+            </h2>
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+              Your feedback helps Ba create even more memorable dining experiences. Share your thoughts with us!
+            </p>
+          </div>
+          
+          <div className="max-w-2xl mx-auto">
+            <div className="bg-gray-900 rounded-2xl p-8 md:p-12 border border-amber-600/20">
+              <div className="flex items-center justify-center mb-8">
+                <MessageSquare className="w-12 h-12 text-amber-500" />
+              </div>
+              
+              <form onSubmit={handleFeedbackSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
+                      Your Name *
+                    </label>
+                    <input
+                      type="text"
+                      id="name"
+                      required
+                      value={feedbackForm.name}
+                      onChange={(e) => handleFeedbackChange('name', e.target.value)}
+                      className="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                      placeholder="Enter your name"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
+                      Email Address *
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      required
+                      value={feedbackForm.email}
+                      onChange={(e) => handleFeedbackChange('email', e.target.value)}
+                      className="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                      placeholder="Enter your email"
+                    />
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Overall Rating *
+                  </label>
+                  <div className="flex items-center space-x-2">
+                    {[1, 2, 3, 4, 5].map((rating) => (
+                      <button
+                        key={rating}
+                        type="button"
+                        onClick={() => handleFeedbackChange('rating', rating)}
+                        className="focus:outline-none"
+                      >
+                        <Star
+                          className={`w-8 h-8 transition-colors ${
+                            rating <= feedbackForm.rating
+                              ? 'text-amber-400 fill-current'
+                              : 'text-gray-600'
+                          }`}
+                        />
+                      </button>
+                    ))}
+                    <span className="ml-4 text-gray-300">
+                      {feedbackForm.rating} star{feedbackForm.rating !== 1 ? 's' : ''}
+                    </span>
+                  </div>
+                </div>
+                
+                <div>
+                  <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-2">
+                    Your Feedback *
+                  </label>
+                  <textarea
+                    id="message"
+                    required
+                    rows={6}
+                    value={feedbackForm.message}
+                    onChange={(e) => handleFeedbackChange('message', e.target.value)}
+                    className="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent resize-none"
+                    placeholder="Tell us about your experience at Ba's Supper Club. What did you love? What could we improve?"
+                  />
+                </div>
+                
+                <button
+                  type="submit"
+                  className="w-full bg-gradient-to-r from-amber-600 to-orange-500 hover:from-amber-700 hover:to-orange-600 text-white font-semibold py-4 px-6 rounded-lg transition-all duration-300 flex items-center justify-center space-x-2"
+                >
+                  <Send className="w-5 h-5" />
+                  <span>Submit Feedback</span>
+                </button>
+              </form>
+              
+              <div className="mt-8 p-6 bg-amber-50 rounded-lg border border-amber-200">
+                <h4 className="text-lg font-semibold text-amber-800 mb-2">
+                  📞 Prefer to call?
+                </h4>
+                <p className="text-amber-700 mb-2">
+                  Ba personally reads every feedback and loves hearing from guests directly.
+                </p>
+                <div className="flex items-center text-amber-800 font-medium">
+                  <Phone className="w-4 h-4 mr-2" />
+                  <span>+91-99741 20608</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
       {/* Reservations Section */}
       <section id="reservations" className="py-20 bg-gradient-to-r from-amber-600 to-orange-500">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
