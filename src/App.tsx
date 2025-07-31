@@ -96,6 +96,8 @@ function App() {
                 <a href="#menu" className="text-gray-300 hover:text-amber-300 px-3 py-2 text-sm font-medium transition-colors">Menu</a>
                 <a href="#experience" className="text-gray-300 hover:text-amber-300 px-3 py-2 text-sm font-medium transition-colors">Experience</a>
                 <a href="#testimonials" className="text-gray-300 hover:text-amber-300 px-3 py-2 text-sm font-medium transition-colors">Reviews</a>
+                <a href="#gallery" className="text-gray-300 hover:text-amber-300 px-3 py-2 text-sm font-medium transition-colors">Gallery</a>
+                <a href="#feedback" className="text-gray-300 hover:text-amber-300 px-3 py-2 text-sm font-medium transition-colors">Feedback</a>
                 <a href="#reservations" className="text-gray-300 hover:text-amber-300 px-3 py-2 text-sm font-medium transition-colors">Reservations</a>
               </div>
             </div>
@@ -119,6 +121,8 @@ function App() {
               <a href="#menu" className="text-gray-300 hover:text-amber-300 block px-3 py-2 text-base font-medium">Menu</a>
               <a href="#experience" className="text-gray-300 hover:text-amber-300 block px-3 py-2 text-base font-medium">Experience</a>
               <a href="#testimonials" className="text-gray-300 hover:text-amber-300 block px-3 py-2 text-base font-medium">Reviews</a>
+              <a href="#gallery" className="text-gray-300 hover:text-amber-300 block px-3 py-2 text-base font-medium">Gallery</a>
+              <a href="#feedback" className="text-gray-300 hover:text-amber-300 block px-3 py-2 text-base font-medium">Feedback</a>
               <a href="#reservations" className="text-gray-300 hover:text-amber-300 block px-3 py-2 text-base font-medium">Reservations</a>
             </div>
           </div>
@@ -282,6 +286,301 @@ function App() {
                   </p>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section id="testimonials" className="py-20 bg-gray-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4">
+              What Our Guests Say
+            </h2>
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+              Hear from the people who have experienced Ba's warmth and authentic home-style cooking
+            </p>
+          </div>
+          
+          <div className="relative max-w-4xl mx-auto">
+            <div className="bg-gray-900 rounded-2xl p-8 md:p-12 border border-amber-600/20">
+              <div className="flex justify-center mb-6">
+                {[...Array(testimonials[currentTestimonial].rating)].map((_, i) => (
+                  <Star key={i} className="w-6 h-6 text-amber-400 fill-current" />
+                ))}
+              </div>
+              
+              <blockquote className="text-lg md:text-xl text-gray-300 text-center mb-8 leading-relaxed">
+                "{testimonials[currentTestimonial].content}"
+              </blockquote>
+              
+              <div className="text-center">
+                <div className="text-white font-semibold text-lg">
+                  {testimonials[currentTestimonial].name}
+                </div>
+                <div className="text-amber-400 text-sm">
+                  {testimonials[currentTestimonial].role}
+                </div>
+              </div>
+            </div>
+            
+            {testimonials.length > 1 && (
+              <div className="flex justify-center items-center mt-8 space-x-4">
+                <button
+                  onClick={prevTestimonial}
+                  className="p-3 bg-gray-800 hover:bg-gray-700 rounded-full border border-amber-600/20 hover:border-amber-600/40 transition-all"
+                >
+                  <ChevronLeft className="w-5 h-5 text-amber-400" />
+                </button>
+                
+                <div className="flex space-x-2">
+                  {testimonials.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentTestimonial(index)}
+                      className={`w-3 h-3 rounded-full transition-all ${
+                        index === currentTestimonial ? 'bg-amber-400' : 'bg-gray-600'
+                      }`}
+                    />
+                  ))}
+                </div>
+                
+                <button
+                  onClick={nextTestimonial}
+                  className="p-3 bg-gray-800 hover:bg-gray-700 rounded-full border border-amber-600/20 hover:border-amber-600/40 transition-all"
+                >
+                  <ChevronRight className="w-5 h-5 text-amber-400" />
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* Feedback Section */}
+      <section id="feedback" className="py-20 bg-gray-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4">
+              Share Your Experience
+            </h2>
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+              Your feedback helps Ba improve and create even more memorable dining experiences
+            </p>
+          </div>
+          
+          <div className="max-w-2xl mx-auto">
+            <div className="bg-gray-800 rounded-2xl p-8 md:p-12 border border-amber-600/20">
+              <form className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-amber-400 font-medium mb-2">Your Name</label>
+                    <input
+                      type="text"
+                      className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+                      placeholder="Enter your name"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-amber-400 font-medium mb-2">Email</label>
+                    <input
+                      type="email"
+                      className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+                      placeholder="your@email.com"
+                    />
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="block text-amber-400 font-medium mb-2">Rating</label>
+                  <div className="flex space-x-2">
+                    {[1, 2, 3, 4, 5].map((rating) => (
+                      <button
+                        key={rating}
+                        type="button"
+                        className="text-gray-500 hover:text-amber-400 transition-colors"
+                      >
+                        <Star className="w-8 h-8" />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="block text-amber-400 font-medium mb-2">Your Experience</label>
+                  <textarea
+                    rows={5}
+                    className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+                    placeholder="Tell us about your experience at Ba's Supper Club..."
+                  ></textarea>
+                </div>
+                
+                <div>
+                  <label className="block text-amber-400 font-medium mb-2">Would you recommend Ba's to others?</label>
+                  <div className="flex space-x-6">
+                    <label className="flex items-center">
+                      <input type="radio" name="recommend" value="yes" className="sr-only" />
+                      <div className="w-4 h-4 border-2 border-gray-600 rounded-full mr-2"></div>
+                      <span className="text-white">Yes, absolutely!</span>
+                    </label>
+                    <label className="flex items-center">
+                      <input type="radio" name="recommend" value="maybe" className="sr-only" />
+                      <div className="w-4 h-4 border-2 border-gray-600 rounded-full mr-2"></div>
+                      <span className="text-white">Maybe</span>
+                    </label>
+                    <label className="flex items-center">
+                      <input type="radio" name="recommend" value="no" className="sr-only" />
+                      <div className="w-4 h-4 border-2 border-gray-600 rounded-full mr-2"></div>
+                      <span className="text-white">Not really</span>
+                    </label>
+                  </div>
+                </div>
+                
+                <button
+                  type="submit"
+                  className="w-full bg-gradient-to-r from-amber-600 to-orange-500 hover:from-amber-700 hover:to-orange-600 text-white font-semibold py-4 px-6 rounded-lg transition-all transform hover:scale-105"
+                >
+                  Submit Feedback
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Gallery Section */}
+      <section id="gallery" className="py-20 bg-gray-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4">
+              Memories from Ba's Kitchen
+            </h2>
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+              Glimpses of our past events, the joy of our guests, and the warmth of Ba's hospitality
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {/* Gallery Item 1 */}
+            <div className="bg-gray-900 rounded-xl overflow-hidden border border-amber-600/20 hover:border-amber-600/40 transition-all group">
+              <div className="aspect-w-16 aspect-h-12 bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
+                <ChefHat className="w-16 h-16 text-white opacity-60" />
+              </div>
+              <div className="p-6">
+                <h3 className="text-xl font-serif font-semibold text-white mb-2">
+                  First Mexican Night
+                </h3>
+                <p className="text-gray-400 text-sm leading-relaxed">
+                  Ba's inaugural Mexican cuisine evening featuring authentic enchiladas and warm hospitality. 
+                  Guests were delighted by the authentic flavors and intimate setting.
+                </p>
+                <div className="mt-4 text-amber-400 text-xs font-medium">
+                  January 2025 • 8 Guests
+                </div>
+              </div>
+            </div>
+            
+            {/* Gallery Item 2 */}
+            <div className="bg-gray-900 rounded-xl overflow-hidden border border-amber-600/20 hover:border-amber-600/40 transition-all group">
+              <div className="aspect-w-16 aspect-h-12 bg-gradient-to-br from-red-500 to-pink-500 flex items-center justify-center">
+                <Heart className="w-16 h-16 text-white opacity-60" />
+              </div>
+              <div className="p-6">
+                <h3 className="text-xl font-serif font-semibold text-white mb-2">
+                  Valentine's Special
+                </h3>
+                <p className="text-gray-400 text-sm leading-relaxed">
+                  A romantic evening with couples enjoying Ba's special Italian menu. 
+                  The intimate candlelit setting created perfect moments for our guests.
+                </p>
+                <div className="mt-4 text-amber-400 text-xs font-medium">
+                  February 2025 • 6 Guests
+                </div>
+              </div>
+            </div>
+            
+            {/* Gallery Item 3 */}
+            <div className="bg-gray-900 rounded-xl overflow-hidden border border-amber-600/20 hover:border-amber-600/40 transition-all group">
+              <div className="aspect-w-16 aspect-h-12 bg-gradient-to-br from-green-500 to-teal-500 flex items-center justify-center">
+                <Users className="w-16 h-16 text-white opacity-60" />
+              </div>
+              <div className="p-6">
+                <h3 className="text-xl font-serif font-semibold text-white mb-2">
+                  Family Gathering
+                </h3>
+                <p className="text-gray-400 text-sm leading-relaxed">
+                  Three generations came together for Ba's traditional Gujarati thali. 
+                  The warmth of home-cooked food brought smiles to every face.
+                </p>
+                <div className="mt-4 text-amber-400 text-xs font-medium">
+                  March 2025 • 8 Guests
+                </div>
+              </div>
+            </div>
+            
+            {/* Gallery Item 4 */}
+            <div className="bg-gray-900 rounded-xl overflow-hidden border border-amber-600/20 hover:border-amber-600/40 transition-all group">
+              <div className="aspect-w-16 aspect-h-12 bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center">
+                <Award className="w-16 h-16 text-white opacity-60" />
+              </div>
+              <div className="p-6">
+                <h3 className="text-xl font-serif font-semibold text-white mb-2">
+                  Birthday Celebration
+                </h3>
+                <p className="text-gray-400 text-sm leading-relaxed">
+                  A surprise birthday dinner featuring Ba's signature continental dishes. 
+                  The birthday guest was moved to tears by the thoughtful presentation.
+                </p>
+                <div className="mt-4 text-amber-400 text-xs font-medium">
+                  April 2025 • 7 Guests
+                </div>
+              </div>
+            </div>
+            
+            {/* Gallery Item 5 */}
+            <div className="bg-gray-900 rounded-xl overflow-hidden border border-amber-600/20 hover:border-amber-600/40 transition-all group">
+              <div className="aspect-w-16 aspect-h-12 bg-gradient-to-br from-yellow-500 to-orange-500 flex items-center justify-center">
+                <Wine className="w-16 h-16 text-white opacity-60" />
+              </div>
+              <div className="p-6">
+                <h3 className="text-xl font-serif font-semibold text-white mb-2">
+                  Wine Pairing Evening
+                </h3>
+                <p className="text-gray-400 text-sm leading-relaxed">
+                  An elegant French cuisine night with carefully selected wine pairings. 
+                  Guests learned about flavor combinations while enjoying Ba's culinary artistry.
+                </p>
+                <div className="mt-4 text-amber-400 text-xs font-medium">
+                  May 2025 • 6 Guests
+                </div>
+              </div>
+            </div>
+            
+            {/* Gallery Item 6 */}
+            <div className="bg-gray-900 rounded-xl overflow-hidden border border-amber-600/20 hover:border-amber-600/40 transition-all group">
+              <div className="aspect-w-16 aspect-h-12 bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
+                <Calendar className="w-16 h-16 text-white opacity-60" />
+              </div>
+              <div className="p-6">
+                <h3 className="text-xl font-serif font-semibold text-white mb-2">
+                  Anniversary Dinner
+                </h3>
+                <p className="text-gray-400 text-sm leading-relaxed">
+                  A couple celebrated their 25th anniversary with Ba's special Mediterranean menu. 
+                  The evening was filled with nostalgia, love, and exceptional food.
+                </p>
+                <div className="mt-4 text-amber-400 text-xs font-medium">
+                  June 2025 • 4 Guests
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div className="text-center mt-12">
+            <div className="bg-gray-900 rounded-xl p-6 border border-amber-600/20 inline-block">
+              <p className="text-gray-300 text-lg mb-2">Want to create your own memories?</p>
+              <p className="text-amber-400 font-medium">Book your intimate dining experience today!</p>
             </div>
           </div>
         </div>
