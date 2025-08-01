@@ -18,7 +18,7 @@ app.use(express.json());
 // API endpoint to update content.json
 app.post('/api/update-content', async (req, res) => {
   try {
-    const contentPath = path.join(__dirname, 'src', 'data', 'content.json');
+    const contentPath = path.join(__dirname, 'data', 'content.json');
     await fs.writeFile(contentPath, JSON.stringify(req.body, null, 2));
     res.json({ success: true, message: 'Content updated successfully' });
   } catch (error) {
@@ -30,7 +30,7 @@ app.post('/api/update-content', async (req, res) => {
 // API endpoint to update feedbacks.json
 app.post('/api/update-feedbacks', async (req, res) => {
   try {
-    const feedbacksPath = path.join(__dirname, 'src', 'data', 'feedbacks.json');
+    const feedbacksPath = path.join(__dirname, 'data', 'feedbacks.json');
     await fs.writeFile(feedbacksPath, JSON.stringify(req.body, null, 2));
     res.json({ success: true, message: 'Feedbacks updated successfully' });
   } catch (error) {
@@ -42,7 +42,7 @@ app.post('/api/update-feedbacks', async (req, res) => {
 // API endpoint to update admin.json
 app.post('/api/update-admin', async (req, res) => {
   try {
-    const adminPath = path.join(__dirname, 'src', 'data', 'admin.json');
+    const adminPath = path.join(__dirname, 'data', 'admin.json');
     await fs.writeFile(adminPath, JSON.stringify(req.body, null, 2));
     res.json({ success: true, message: 'Admin data updated successfully' });
   } catch (error) {

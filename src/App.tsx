@@ -99,7 +99,7 @@ function App() {
 
   const loadContentData = async () => {
     try {
-      const response = await fetch('/src/data/content.json');
+      const response = await fetch('/data/content.json');
       const data = await response.json();
       setContentData(data);
     } catch (error) {
@@ -112,7 +112,7 @@ function App() {
     setAdminError('');
     
     try {
-      const response = await fetch('/src/data/admin.json');
+      const response = await fetch('/data/admin.json');
       const adminData = await response.json();
       
       // Simple bcrypt-like comparison (in production, use proper bcrypt)

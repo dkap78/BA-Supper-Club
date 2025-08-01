@@ -101,11 +101,11 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
 
   const loadData = async () => {
     try {
-      const contentResponse = await fetch('/src/data/content.json');
+      const contentResponse = await fetch('/data/content.json');
       const content = await contentResponse.json();
       setContentData(content);
 
-      const feedbackResponse = await fetch('/src/data/feedbacks.json');
+      const feedbackResponse = await fetch('/data/feedbacks.json');
       const feedbackData = await feedbackResponse.json();
       setFeedbacks(feedbackData);
     } catch (error) {
