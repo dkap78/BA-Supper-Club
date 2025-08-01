@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { 
   Menu, 
   X, 
@@ -16,65 +17,354 @@ import {
   Award,
   Heart,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Settings,
+  Lock
 } from 'lucide-react';
+import AdminDashboard from './components/AdminDashboard';
+
+interface ContentData {
+  home: {
+    summary: string;
+  };
+  menus: Array<{
+    id: string;
+    date: string;
+    title: string;
+    pricePerPerson: number;
+    maxPersons: number;
+    childrenAllowed: boolean;
+    categories: {
+      mainCourse: Array<{ name: string; description: string; }>;
+      desserts: Array<{ name: string; description: string; }>;
+    };
+  }>;
+  feedback: {
+    adminEmail: string;
+  };
+  reviews: Array<{
+    id: string;
+    name: string;
+    email: string;
+    role: string;
+    content: string;
+    rating: number;
+    date: string;
+    status: string;
+  }>;
+  gallery: Array<{
+    id: string;
+    name: string;
+    description: string;
+    date: string;
+    photos: string[];
+  }>;
+  reservation: {
+    phoneNumber: string;
+    gpayNumber: string;
+    contactPerson: string;
+  };
+}
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
+  const [showAdminDashboard, setShowAdminDashboard] = useState(false);
+  const [showAdminLogin, setShowAdminLogin] = useState(false);
+  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
+  const [adminPassword, setAdminPassword] = useState('');
+  const [adminError, setAdminError] = useState('');
+  const [contentData, setContentData] = useState<ContentData | null>(null);
+  const [selectedAlbum, setSelectedAlbum] = useState<any>(null);
+  const [currentGalleryIndex, setCurrentGalleryIndex] = useState(0);
+  const [feedbackForm, setFeedbackForm] = useState({
+    name: '',
+    email: '',
+    rating: 0,
+    content: '',
+    recommend: ''
+  });
 
-  const testimonials = [
-    {
-      name: "Priya Sharma",
-      role: "Regular Guest from Jamnagar",
-      content: "Ba's kitchen feels like home away from home. The warmth, the flavors, and Ba's personal touch make every meal special. It's like being invited to a dear friend's family dinner.",
-      rating: 5
-    },
-    {
-      name: "Rajesh Patel",
-      role: "Food Enthusiast",
-      content: "I've never experienced such authentic, home-style cooking in a restaurant setting. Ba treats every guest like family, and you can taste the love in every dish.",
-      rating: 5
-    },
-    {
-      name: "Meera Joshi",
-      role: "Local Resident",
-      content: "Ba's Kitchen has brought something truly special to Jamnagar. The intimate setting and Ba's personal care make you feel like you're dining at your grandmother's house.",
-      rating: 5
+  useEffect(() => {
+    loadContentData();
+    
+    // Check if admin route is accessed
+    const currentPath = window.location.pathname;
+    if (currentPath.endsWith('/adashb')) {
+      setShowAdminLogin(true);
+      // Replace the URL without the admin path to hide it
+      window.history.replaceState({}, '', window.location.pathname.replace('/adashb', ''));
     }
-  ];
+  }, []);
 
-  const menuHighlights = [
-    {
-      category: "Main Course",
-      icon: <ChefHat className="w-6 h-6" />,
-      items: [
-        { name: "Enchiladas", description: "Rolled tortillas filled with vegies and cheese, topped with Ba's signature sauce", price: "₹420" },
-        { name: "Mexican Rice and Beans", description: "Authentic Mexican rice served with seasoned black beans, fresh guacamole, sour cream, and various homemade salsas", price: "₹350" }
-      ]
-    },
-    {
-      category: "Desserts",
-      icon: <Heart className="w-6 h-6" />,
-      items: [
-        { name: "Churros", description: "Golden fried dough sticks rolled in cinnamon sugar, served with chocolate dipping sauce", price: "₹160" }
-      ]
+  const loadContentData = async () => {
+    try {
+      const response = await fetch('/src/data/content.json');
+      const data = await response.json();
+      setContentData(data);
+    } catch (error) {
+      console.error('Error loading content:', error);
     }
-  ];
+  };
 
-  const menuColumns = (menuHighlights.length > 3 ? 3 : menuHighlights.length);
-  const menuGridColClassName = "lg:grid-cols-" + menuColumns;
+  const handleAdminLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAdminError('');
+    
+    try {
+      const response = await fetch('/src/data/admin.json');
+      const adminData = await response.json();
+      
+      // Simple bcrypt-like comparison (in production, use proper bcrypt)
+      const isValidPassword = await verifyPassword(adminPassword, adminData.password);
+      
+      if (isValidPassword) {
+        setIsAdminAuthenticated(true);
+        setShowAdminLogin(false);
+        setShowAdminDashboard(true);
+        setAdminPassword('');
+      } else {
+        setAdminError('Invalid password. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error authenticating admin:', error);
+      setAdminError('Authentication failed. Please try again.');
+    }
+  };
+
+  const verifyPassword = async (plainPassword: string, hashedPassword: string): Promise<boolean> => {
+    // Simple password verification (in production, use proper bcrypt)
+    // For demo purposes, the hashed password represents "admin123"
+    const newHashedPassword = `$2b$10$${btoa(plainPassword).substring(0, 53)}`
+    return newHashedPassword === hashedPassword;
+  };
+
+  const handleAdminLogout = () => {
+    setIsAdminAuthenticated(false);
+    setShowAdminDashboard(false);
+    setShowAdminLogin(false);
+    setAdminPassword('');
+    setAdminError('');
+  };
+
+  if (!contentData) {
+    return (
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+        <div className="text-white text-xl">Loading...</div>
+      </div>
+    );
+  }
+
+  // Get latest menu
+  const latestMenu = contentData.menus
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0];
+
+  // Get active reviews
+  const activeReviews = contentData.reviews
+    .filter(review => review.status === 'active')
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+  // Get gallery albums sorted by date
+  const galleryAlbums = contentData.gallery
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   const nextTestimonial = () => {
-    setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
+    setCurrentTestimonial((prev) => (prev + 1) % activeReviews.length);
   };
 
   const prevTestimonial = () => {
-    setCurrentTestimonial((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+    setCurrentTestimonial((prev) => (prev - 1 + activeReviews.length) % activeReviews.length);
   };
+
+  const nextGallerySlide = () => {
+    setCurrentGalleryIndex((prev) => 
+      prev + 4 >= galleryAlbums.length ? 0 : prev + 4
+    );
+  };
+
+  const prevGallerySlide = () => {
+    setCurrentGalleryIndex((prev) => 
+      prev - 4 < 0 ? Math.max(0, galleryAlbums.length - 4) : prev - 4
+    );
+  };
+
+  const handleFeedbackSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    const feedbackData = {
+      id: `feedback-${Date.now()}`,
+      ...feedbackForm,
+      date: new Date().toISOString().split('T')[0]
+    };
+
+    try {
+      // Save feedback locally (in real app, this would be sent to backend)
+      console.log('Saving feedback:', feedbackData);
+      
+      // Send email to admin (in real app, this would be handled by backend)
+      console.log('Sending email to admin:', contentData.feedback.adminEmail);
+      
+      alert('Thank you for your feedback! We have received your submission.');
+      setFeedbackForm({
+        name: '',
+        email: '',
+        rating: 0,
+        content: '',
+        recommend: ''
+      });
+    } catch (error) {
+      console.error('Error submitting feedback:', error);
+      alert('Error submitting feedback. Please try again.');
+    }
+  };
+
+  const generateWhatsAppPamphlet = () => {
+    if (!latestMenu) return;
+    
+    const pamphletContent = `
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ba's Supper Club - ${latestMenu.title}</title>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .header { text-align: center; color: #f59e0b; }
+        .menu-item { margin: 10px 0; }
+        .price { font-size: 24px; font-weight: bold; color: #d97706; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Ba's Supper Club</h1>
+        <h2>${latestMenu.title}</h2>
+        <h3>${new Date(latestMenu.date).toLocaleDateString()}</h3>
+    </div>
+    
+    <div class="price">₹${latestMenu.pricePerPerson} per person</div>
+    
+    <h3>Main Course:</h3>
+    ${latestMenu.categories.mainCourse.map(item => 
+      `<div class="menu-item"><strong>${item.name}</strong>: ${item.description}</div>`
+    ).join('')}
+    
+    <h3>Desserts:</h3>
+    ${latestMenu.categories.desserts.map(item => 
+      `<div class="menu-item"><strong>${item.name}</strong>: ${item.description}</div>`
+    ).join('')}
+    
+    <p><strong>Reservation:</strong> ${contentData.reservation.phoneNumber} (${contentData.reservation.contactPerson})</p>
+    <p><strong>Max Guests:</strong> ${latestMenu.maxPersons}</p>
+    <p><strong>Children:</strong> ${latestMenu.childrenAllowed ? 'Allowed' : 'Not permitted'}</p>
+</body>
+</html>
+    `;
+    
+    const blob = new Blob([pamphletContent], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `bas-supper-club-${latestMenu.date}.html`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const displayedGalleryAlbums = galleryAlbums.slice(currentGalleryIndex, currentGalleryIndex + 4);
 
   return (
     <div className="min-h-screen bg-gray-900">
+      
+
+      {/* Admin Login Modal */}
+      {showAdminLogin && !isAdminAuthenticated && (
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-8 max-w-md w-full mx-4">
+            <div className="text-center mb-6">
+              <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Lock className="w-8 h-8 text-amber-600" />
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900">Admin Access</h2>
+              <p className="text-gray-600 mt-2">Enter admin password to continue</p>
+            </div>
+            
+            <form onSubmit={handleAdminLogin} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  value={adminPassword}
+                  onChange={(e) => setAdminPassword(e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                  placeholder="Enter admin password"
+                  required
+                />
+              </div>
+              
+              {adminError && (
+                <div className="text-red-600 text-sm bg-red-50 p-3 rounded-lg">
+                  {adminError}
+                </div>
+              )}
+              
+              <div className="flex space-x-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowAdminLogin(false);
+                    setAdminPassword('');
+                    setAdminError('');
+                  }}
+                  className="flex-1 py-3 px-4 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 font-medium"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 py-3 px-4 bg-amber-600 text-white rounded-lg hover:bg-amber-700 font-medium"
+                >
+                  Login
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Admin Dashboard */}
+      {showAdminDashboard && isAdminAuthenticated && (
+        <AdminDashboard onClose={handleAdminLogout} />
+      )}
+
+      {/* Album Viewer Modal */}
+      {selectedAlbum && (
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-6 max-w-4xl w-full max-h-96 overflow-y-auto">
+            <div className="flex justify-between items-center mb-4">
+              <div>
+                <h3 className="text-xl font-semibold">{selectedAlbum.name}</h3>
+                <p className="text-gray-600">{selectedAlbum.date}</p>
+              </div>
+              <button
+                onClick={() => setSelectedAlbum(null)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            <p className="text-gray-700 mb-4">{selectedAlbum.description}</p>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {selectedAlbum.photos.map((photo: string, index: number) => (
+                <div key={index} className="aspect-square bg-gray-200 rounded-lg flex items-center justify-center">
+                  <span className="text-gray-500">{photo}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-gray-900/95 backdrop-blur-md border-b border-amber-600/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -143,9 +433,7 @@ function App() {
                 </span>
               </h1>
               <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto leading-relaxed font-light">
-                The primary purpose of my supper club is to create a unique, intimate, and social dining experience, 
-                centered around high-quality food and meaningful conversation. It aims to foster a sense of community 
-                and connection among guests, encouraging interaction and engagement throughout the evening.
+                {contentData.home.summary}
               </p>
             </div>
             
@@ -155,7 +443,7 @@ function App() {
                 <div className="text-gray-400 text-sm">Home-style Dining</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-amber-400">Max 8</div>
+                <div className="text-2xl font-bold text-amber-400">Max {latestMenu?.maxPersons || 8}</div>
                 <div className="text-gray-400 text-sm">Guests per Seating</div>
               </div>
             </div>
@@ -164,45 +452,48 @@ function App() {
       </section>
 
       {/* Menu Highlights Section */}
-      <section id="menu" className="py-20 bg-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4">
-              Ba's Mexican Menu - July 27, 2025
-            </h2>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              A special Mexican dining experience featuring authentic recipes that Ba has perfected over the years
-            </p>
-            <div className="mt-8 inline-block bg-gradient-to-r from-red-600 to-orange-500 rounded-xl px-8 py-4 border-2 border-yellow-400">
-              <div className="text-yellow-200 text-sm font-medium uppercase tracking-wide">Special Event</div>
-              <div className="text-2xl font-bold text-white">Sunday, July 27, 2025</div>
-              <div className="text-3xl font-bold text-white">Complete Menu</div>
-              <div className="text-4xl font-serif font-bold text-white">₹1,200</div>
-              <div className="text-amber-100 text-sm">Per Person | All Items Included</div>
-              <div className="mt-4">
-                <a 
-                  href="whatsapp-pamphlet.html" 
-                  download="bas-supper-club-pamphlet.html"
-                  className="inline-block bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
-                >
-                  📱 Download WhatsApp Pamphlet
-                </a>
+      {latestMenu && (
+        <section id="menu" className="py-20 bg-gray-800">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4">
+                {latestMenu.title} - {new Date(latestMenu.date).toLocaleDateString('en-US', { 
+                  year: 'numeric', 
+                  month: 'long', 
+                  day: 'numeric' 
+                })}
+              </h2>
+              <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+                A special dining experience featuring authentic recipes that Ba has perfected over the years
+              </p>
+              <div className="mt-8 inline-block bg-gradient-to-r from-red-600 to-orange-500 rounded-xl px-8 py-4 border-2 border-yellow-400">
+                <div className="text-yellow-200 text-sm font-medium uppercase tracking-wide">Special Event</div>
+                <div className="text-2xl font-bold text-white">{new Date(latestMenu.date).toLocaleDateString()}</div>
+                <div className="text-3xl font-bold text-white">Complete Menu</div>
+                <div className="text-4xl font-serif font-bold text-white">₹{latestMenu.pricePerPerson}</div>
+                <div className="text-amber-100 text-sm">Per Person | All Items Included</div>
+                <div className="mt-4">
+                  <button 
+                    onClick={generateWhatsAppPamphlet}
+                    className="inline-block bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+                  >
+                    📱 Download WhatsApp Pamphlet
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className={'grid grid-cols-1 ' + menuGridColClassName + ' gap-8'}>
-            {menuHighlights.map((category, index) => (
-              <div key={index} className="bg-gray-900 rounded-xl p-8 border border-amber-600/20 hover:border-amber-600/40 transition-all">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div className="bg-gray-900 rounded-xl p-8 border border-amber-600/20 hover:border-amber-600/40 transition-all">
                 <div className="flex items-center mb-6">
                   <div className="text-amber-500 mr-3">
-                    {category.icon}
+                    <ChefHat className="w-6 h-6" />
                   </div>
-                  <h3 className="text-2xl font-serif font-semibold text-white">{category.category}</h3>
+                  <h3 className="text-2xl font-serif font-semibold text-white">Main Course</h3>
                 </div>
                 
                 <div className="space-y-6">
-                  {category.items.map((item, idx) => (
+                  {latestMenu.categories.mainCourse.map((item, idx) => (
                     <div key={idx} className="border-b border-gray-700 pb-4 last:border-b-0">
                       <h4 className="text-lg font-medium text-amber-400 mb-2">{item.name}</h4>
                       <p className="text-gray-400 text-sm leading-relaxed">{item.description}</p>
@@ -210,18 +501,38 @@ function App() {
                   ))}
                 </div>
               </div>
-            ))}
-          </div>
-          
-          <div className="text-center mt-12">
-            <div className="bg-gray-900 rounded-xl p-6 border border-amber-600/20 inline-block">
-              <p className="text-gray-300 text-lg mb-2">July 27th Mexican experience includes:</p>
-              <p className="text-amber-400 font-medium">Enchiladas • Mexican Rice & Beans • Churros</p>
-              <p className="text-gray-400 text-sm mt-2">Served with guacamole, sour cream, and various homemade salsas</p>
+
+              <div className="bg-gray-900 rounded-xl p-8 border border-amber-600/20 hover:border-amber-600/40 transition-all">
+                <div className="flex items-center mb-6">
+                  <div className="text-amber-500 mr-3">
+                    <Heart className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-2xl font-serif font-semibold text-white">Desserts</h3>
+                </div>
+                
+                <div className="space-y-6">
+                  {latestMenu.categories.desserts.map((item, idx) => (
+                    <div key={idx} className="border-b border-gray-700 pb-4 last:border-b-0">
+                      <h4 className="text-lg font-medium text-amber-400 mb-2">{item.name}</h4>
+                      <p className="text-gray-400 text-sm leading-relaxed">{item.description}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+            
+            <div className="text-center mt-12">
+              <div className="bg-gray-900 rounded-xl p-6 border border-amber-600/20 inline-block">
+                <p className="text-gray-300 text-lg mb-2">{new Date(latestMenu.date).toLocaleDateString()} experience includes:</p>
+                <p className="text-amber-400 font-medium">
+                  {latestMenu.categories.mainCourse.map(item => item.name).join(' • ')} • {latestMenu.categories.desserts.map(item => item.name).join(' • ')}
+                </p>
+                <p className="text-gray-400 text-sm mt-2">Served with guacamole, sour cream, and various homemade salsas</p>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Experience Section */}
       <section id="experience" className="py-20 bg-gray-900">
@@ -249,7 +560,7 @@ function App() {
                   <Users className="w-8 h-8 text-amber-500 mr-3" />
                   <div>
                     <div className="text-white font-semibold">Intimate Setting</div>
-                    <div className="text-gray-400 text-sm">Maximum 8 guests</div>
+                    <div className="text-gray-400 text-sm">Maximum {latestMenu?.maxPersons || 8} guests</div>
                   </div>
                 </div>
                 <div className="flex items-center">
@@ -292,71 +603,73 @@ function App() {
       </section>
 
       {/* Testimonials Section */}
-      <section id="testimonials" className="py-20 bg-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4">
-              What Our Guests Say
-            </h2>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              Hear from the people who have experienced Ba's warmth and authentic home-style cooking
-            </p>
-          </div>
-          
-          <div className="relative max-w-4xl mx-auto">
-            <div className="bg-gray-900 rounded-2xl p-8 md:p-12 border border-amber-600/20">
-              <div className="flex justify-center mb-6">
-                {[...Array(testimonials[currentTestimonial].rating)].map((_, i) => (
-                  <Star key={i} className="w-6 h-6 text-amber-400 fill-current" />
-                ))}
-              </div>
-              
-              <blockquote className="text-lg md:text-xl text-gray-300 text-center mb-8 leading-relaxed">
-                "{testimonials[currentTestimonial].content}"
-              </blockquote>
-              
-              <div className="text-center">
-                <div className="text-white font-semibold text-lg">
-                  {testimonials[currentTestimonial].name}
-                </div>
-                <div className="text-amber-400 text-sm">
-                  {testimonials[currentTestimonial].role}
-                </div>
-              </div>
+      {activeReviews.length > 0 && (
+        <section id="testimonials" className="py-20 bg-gray-800">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4">
+                What Our Guests Say
+              </h2>
+              <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+                Hear from the people who have experienced Ba's warmth and authentic home-style cooking
+              </p>
             </div>
             
-            {testimonials.length > 1 && (
-              <div className="flex justify-center items-center mt-8 space-x-4">
-                <button
-                  onClick={prevTestimonial}
-                  className="p-3 bg-gray-800 hover:bg-gray-700 rounded-full border border-amber-600/20 hover:border-amber-600/40 transition-all"
-                >
-                  <ChevronLeft className="w-5 h-5 text-amber-400" />
-                </button>
-                
-                <div className="flex space-x-2">
-                  {testimonials.map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setCurrentTestimonial(index)}
-                      className={`w-3 h-3 rounded-full transition-all ${
-                        index === currentTestimonial ? 'bg-amber-400' : 'bg-gray-600'
-                      }`}
-                    />
+            <div className="relative max-w-4xl mx-auto">
+              <div className="bg-gray-900 rounded-2xl p-8 md:p-12 border border-amber-600/20">
+                <div className="flex justify-center mb-6">
+                  {[...Array(activeReviews[currentTestimonial].rating)].map((_, i) => (
+                    <Star key={i} className="w-6 h-6 text-amber-400 fill-current" />
                   ))}
                 </div>
                 
-                <button
-                  onClick={nextTestimonial}
-                  className="p-3 bg-gray-800 hover:bg-gray-700 rounded-full border border-amber-600/20 hover:border-amber-600/40 transition-all"
-                >
-                  <ChevronRight className="w-5 h-5 text-amber-400" />
-                </button>
+                <blockquote className="text-lg md:text-xl text-gray-300 text-center mb-8 leading-relaxed">
+                  "{activeReviews[currentTestimonial].content}"
+                </blockquote>
+                
+                <div className="text-center">
+                  <div className="text-white font-semibold text-lg">
+                    {activeReviews[currentTestimonial].name}
+                  </div>
+                  <div className="text-amber-400 text-sm">
+                    {activeReviews[currentTestimonial].role}
+                  </div>
+                </div>
               </div>
-            )}
+              
+              {activeReviews.length > 1 && (
+                <div className="flex justify-center items-center mt-8 space-x-4">
+                  <button
+                    onClick={prevTestimonial}
+                    className="p-3 bg-gray-800 hover:bg-gray-700 rounded-full border border-amber-600/20 hover:border-amber-600/40 transition-all"
+                  >
+                    <ChevronLeft className="w-5 h-5 text-amber-400" />
+                  </button>
+                  
+                  <div className="flex space-x-2">
+                    {activeReviews.map((_, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setCurrentTestimonial(index)}
+                        className={`w-3 h-3 rounded-full transition-all ${
+                          index === currentTestimonial ? 'bg-amber-400' : 'bg-gray-600'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  
+                  <button
+                    onClick={nextTestimonial}
+                    className="p-3 bg-gray-800 hover:bg-gray-700 rounded-full border border-amber-600/20 hover:border-amber-600/40 transition-all"
+                  >
+                    <ChevronRight className="w-5 h-5 text-amber-400" />
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Feedback Section */}
       <section id="feedback" className="py-20 bg-gray-900">
@@ -372,12 +685,15 @@ function App() {
           
           <div className="max-w-2xl mx-auto">
             <div className="bg-gray-800 rounded-2xl p-8 md:p-12 border border-amber-600/20">
-              <form className="space-y-6">
+              <form onSubmit={handleFeedbackSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-amber-400 font-medium mb-2">Your Name</label>
                     <input
                       type="text"
+                      required
+                      value={feedbackForm.name}
+                      onChange={(e) => setFeedbackForm({ ...feedbackForm, name: e.target.value })}
                       className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
                       placeholder="Enter your name"
                     />
@@ -386,6 +702,9 @@ function App() {
                     <label className="block text-amber-400 font-medium mb-2">Email</label>
                     <input
                       type="email"
+                      required
+                      value={feedbackForm.email}
+                      onChange={(e) => setFeedbackForm({ ...feedbackForm, email: e.target.value })}
                       className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
                       placeholder="your@email.com"
                     />
@@ -399,9 +718,12 @@ function App() {
                       <button
                         key={rating}
                         type="button"
-                        className="text-gray-500 hover:text-amber-400 transition-colors"
+                        onClick={() => setFeedbackForm({ ...feedbackForm, rating })}
+                        className={`transition-colors ${
+                          rating <= feedbackForm.rating ? 'text-amber-400' : 'text-gray-500 hover:text-amber-400'
+                        }`}
                       >
-                        <Star className="w-8 h-8" />
+                        <Star className="w-8 h-8 fill-current" />
                       </button>
                     ))}
                   </div>
@@ -411,6 +733,9 @@ function App() {
                   <label className="block text-amber-400 font-medium mb-2">Your Experience</label>
                   <textarea
                     rows={5}
+                    required
+                    value={feedbackForm.content}
+                    onChange={(e) => setFeedbackForm({ ...feedbackForm, content: e.target.value })}
                     className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
                     placeholder="Tell us about your experience at Ba's Supper Club..."
                   ></textarea>
@@ -419,21 +744,24 @@ function App() {
                 <div>
                   <label className="block text-amber-400 font-medium mb-2">Would you recommend Ba's to others?</label>
                   <div className="flex space-x-6">
-                    <label className="flex items-center">
-                      <input type="radio" name="recommend" value="yes" className="sr-only" />
-                      <div className="w-4 h-4 border-2 border-gray-600 rounded-full mr-2"></div>
-                      <span className="text-white">Yes, absolutely!</span>
-                    </label>
-                    <label className="flex items-center">
-                      <input type="radio" name="recommend" value="maybe" className="sr-only" />
-                      <div className="w-4 h-4 border-2 border-gray-600 rounded-full mr-2"></div>
-                      <span className="text-white">Maybe</span>
-                    </label>
-                    <label className="flex items-center">
-                      <input type="radio" name="recommend" value="no" className="sr-only" />
-                      <div className="w-4 h-4 border-2 border-gray-600 rounded-full mr-2"></div>
-                      <span className="text-white">Not really</span>
-                    </label>
+                    {['yes', 'maybe', 'no'].map((option) => (
+                      <label key={option} className="flex items-center cursor-pointer">
+                        <input 
+                          type="radio" 
+                          name="recommend" 
+                          value={option}
+                          checked={feedbackForm.recommend === option}
+                          onChange={(e) => setFeedbackForm({ ...feedbackForm, recommend: e.target.value })}
+                          className="sr-only" 
+                        />
+                        <div className={`w-4 h-4 border-2 rounded-full mr-2 ${
+                          feedbackForm.recommend === option ? 'bg-amber-400 border-amber-400' : 'border-gray-600'
+                        }`}></div>
+                        <span className="text-white capitalize">
+                          {option === 'yes' ? 'Yes, absolutely!' : option === 'maybe' ? 'Maybe' : 'Not really'}
+                        </span>
+                      </label>
+                    ))}
                   </div>
                 </div>
                 
@@ -461,119 +789,47 @@ function App() {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Gallery Item 1 */}
-            <div className="bg-gray-900 rounded-xl overflow-hidden border border-amber-600/20 hover:border-amber-600/40 transition-all group">
-              <div className="aspect-w-16 aspect-h-12 bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
-                <ChefHat className="w-16 h-16 text-white opacity-60" />
+          <div className="relative">
+            {galleryAlbums.length > 4 && (
+              <div className="flex justify-between items-center mb-8">
+                <button
+                  onClick={prevGallerySlide}
+                  className="p-3 bg-gray-900 hover:bg-gray-700 rounded-full border border-amber-600/20 hover:border-amber-600/40 transition-all"
+                >
+                  <ChevronLeft className="w-5 h-5 text-amber-400" />
+                </button>
+                <button
+                  onClick={nextGallerySlide}
+                  className="p-3 bg-gray-900 hover:bg-gray-700 rounded-full border border-amber-600/20 hover:border-amber-600/40 transition-all"
+                >
+                  <ChevronRight className="w-5 h-5 text-amber-400" />
+                </button>
               </div>
-              <div className="p-6">
-                <h3 className="text-xl font-serif font-semibold text-white mb-2">
-                  First Mexican Night
-                </h3>
-                <p className="text-gray-400 text-sm leading-relaxed">
-                  Ba's inaugural Mexican cuisine evening featuring authentic enchiladas and warm hospitality. 
-                  Guests were delighted by the authentic flavors and intimate setting.
-                </p>
-                <div className="mt-4 text-amber-400 text-xs font-medium">
-                  January 2025 • 8 Guests
-                </div>
-              </div>
-            </div>
+            )}
             
-            {/* Gallery Item 2 */}
-            <div className="bg-gray-900 rounded-xl overflow-hidden border border-amber-600/20 hover:border-amber-600/40 transition-all group">
-              <div className="aspect-w-16 aspect-h-12 bg-gradient-to-br from-red-500 to-pink-500 flex items-center justify-center">
-                <Heart className="w-16 h-16 text-white opacity-60" />
-              </div>
-              <div className="p-6">
-                <h3 className="text-xl font-serif font-semibold text-white mb-2">
-                  Valentine's Special
-                </h3>
-                <p className="text-gray-400 text-sm leading-relaxed">
-                  A romantic evening with couples enjoying Ba's special Italian menu. 
-                  The intimate candlelit setting created perfect moments for our guests.
-                </p>
-                <div className="mt-4 text-amber-400 text-xs font-medium">
-                  February 2025 • 6 Guests
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {displayedGalleryAlbums.map((album) => (
+                <div 
+                  key={album.id} 
+                  className="bg-gray-900 rounded-xl overflow-hidden border border-amber-600/20 hover:border-amber-600/40 transition-all group cursor-pointer"
+                  onClick={() => setSelectedAlbum(album)}
+                >
+                  <div className="aspect-w-16 aspect-h-12 bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
+                    <ChefHat className="w-16 h-16 text-white opacity-60" />
+                  </div>
+                  <div className="p-6">
+                    <h3 className="text-xl font-serif font-semibold text-white mb-2">
+                      {album.name}
+                    </h3>
+                    <p className="text-gray-400 text-sm leading-relaxed mb-4">
+                      {album.description}
+                    </p>
+                    <div className="text-amber-400 text-xs font-medium">
+                      {new Date(album.date).toLocaleDateString()} • {album.photos.length} Photos
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-            
-            {/* Gallery Item 3 */}
-            <div className="bg-gray-900 rounded-xl overflow-hidden border border-amber-600/20 hover:border-amber-600/40 transition-all group">
-              <div className="aspect-w-16 aspect-h-12 bg-gradient-to-br from-green-500 to-teal-500 flex items-center justify-center">
-                <Users className="w-16 h-16 text-white opacity-60" />
-              </div>
-              <div className="p-6">
-                <h3 className="text-xl font-serif font-semibold text-white mb-2">
-                  Family Gathering
-                </h3>
-                <p className="text-gray-400 text-sm leading-relaxed">
-                  Three generations came together for Ba's traditional Gujarati thali. 
-                  The warmth of home-cooked food brought smiles to every face.
-                </p>
-                <div className="mt-4 text-amber-400 text-xs font-medium">
-                  March 2025 • 8 Guests
-                </div>
-              </div>
-            </div>
-            
-            {/* Gallery Item 4 */}
-            <div className="bg-gray-900 rounded-xl overflow-hidden border border-amber-600/20 hover:border-amber-600/40 transition-all group">
-              <div className="aspect-w-16 aspect-h-12 bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center">
-                <Award className="w-16 h-16 text-white opacity-60" />
-              </div>
-              <div className="p-6">
-                <h3 className="text-xl font-serif font-semibold text-white mb-2">
-                  Birthday Celebration
-                </h3>
-                <p className="text-gray-400 text-sm leading-relaxed">
-                  A surprise birthday dinner featuring Ba's signature continental dishes. 
-                  The birthday guest was moved to tears by the thoughtful presentation.
-                </p>
-                <div className="mt-4 text-amber-400 text-xs font-medium">
-                  April 2025 • 7 Guests
-                </div>
-              </div>
-            </div>
-            
-            {/* Gallery Item 5 */}
-            <div className="bg-gray-900 rounded-xl overflow-hidden border border-amber-600/20 hover:border-amber-600/40 transition-all group">
-              <div className="aspect-w-16 aspect-h-12 bg-gradient-to-br from-yellow-500 to-orange-500 flex items-center justify-center">
-                <Wine className="w-16 h-16 text-white opacity-60" />
-              </div>
-              <div className="p-6">
-                <h3 className="text-xl font-serif font-semibold text-white mb-2">
-                  Wine Pairing Evening
-                </h3>
-                <p className="text-gray-400 text-sm leading-relaxed">
-                  An elegant French cuisine night with carefully selected wine pairings. 
-                  Guests learned about flavor combinations while enjoying Ba's culinary artistry.
-                </p>
-                <div className="mt-4 text-amber-400 text-xs font-medium">
-                  May 2025 • 6 Guests
-                </div>
-              </div>
-            </div>
-            
-            {/* Gallery Item 6 */}
-            <div className="bg-gray-900 rounded-xl overflow-hidden border border-amber-600/20 hover:border-amber-600/40 transition-all group">
-              <div className="aspect-w-16 aspect-h-12 bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
-                <Calendar className="w-16 h-16 text-white opacity-60" />
-              </div>
-              <div className="p-6">
-                <h3 className="text-xl font-serif font-semibold text-white mb-2">
-                  Anniversary Dinner
-                </h3>
-                <p className="text-gray-400 text-sm leading-relaxed">
-                  A couple celebrated their 25th anniversary with Ba's special Mediterranean menu. 
-                  The evening was filled with nostalgia, love, and exceptional food.
-                </p>
-                <div className="mt-4 text-amber-400 text-xs font-medium">
-                  June 2025 • 4 Guests
-                </div>
-              </div>
+              ))}
             </div>
           </div>
           
@@ -607,8 +863,8 @@ function App() {
                 <div className="flex items-center justify-center">
                   <Phone className="w-6 h-6 text-amber-600 mr-3" />
                   <div className="text-left">
-                    <div className="text-xl font-bold text-gray-900">+91-99741 20608</div>
-                    <div className="text-amber-700 font-medium">(Bina Parekh)</div>
+                    <div className="text-xl font-bold text-gray-900">{contentData.reservation.phoneNumber}</div>
+                    <div className="text-amber-700 font-medium">({contentData.reservation.contactPerson})</div>
                   </div>
                 </div>
               </div>
@@ -628,21 +884,25 @@ function App() {
                     <Users className="w-5 h-5 text-amber-600 mr-2" />
                     Seating Information
                   </h4>
-                  <p className="text-gray-700">Maximum 8 guests per evening</p>
-                  <p className="text-gray-700">Children under 12 not permitted</p>
+                  <p className="text-gray-700">Maximum {latestMenu?.maxPersons || 8} guests per evening</p>
+                  <p className="text-gray-700">Children under 12 {latestMenu?.childrenAllowed ? 'permitted' : 'not permitted'}</p>
                 </div>
               </div>
               
-              <div className="mt-8 p-6 bg-amber-50 rounded-lg">
-                <h4 className="text-lg font-semibold text-gray-900 mb-3">Mexican Menu - July 27, 2025</h4>
-                <p className="text-gray-700 mb-2">₹1,200 per person for the complete Mexican experience:</p>
-                <p className="text-amber-700 font-medium">Enchiladas • Mexican Rice & Beans • Sopapillas • Churros</p>
-                <p className="text-gray-600 text-sm mt-2">Served with guacamole, sour cream, and homemade salsas</p>
-                <div className="mt-3 p-3 bg-red-100 rounded-lg border border-red-300">
-                  <p className="text-red-800 font-semibold text-sm">📅 Special Event: Sunday, July 27, 2025</p>
-                  <p className="text-red-700 text-sm">Limited seating - Book early to secure your spot!</p>
+              {latestMenu && (
+                <div className="mt-8 p-6 bg-amber-50 rounded-lg">
+                  <h4 className="text-lg font-semibold text-gray-900 mb-3">{latestMenu.title} - {new Date(latestMenu.date).toLocaleDateString()}</h4>
+                  <p className="text-gray-700 mb-2">₹{latestMenu.pricePerPerson} per person for the complete experience:</p>
+                  <p className="text-amber-700 font-medium">
+                    {latestMenu.categories.mainCourse.map(item => item.name).join(' • ')} • {latestMenu.categories.desserts.map(item => item.name).join(' • ')}
+                  </p>
+                  <p className="text-gray-600 text-sm mt-2">Served with guacamole, sour cream, and homemade salsas</p>
+                  <div className="mt-3 p-3 bg-red-100 rounded-lg border border-red-300">
+                    <p className="text-red-800 font-semibold text-sm">📅 Special Event: {new Date(latestMenu.date).toLocaleDateString()}</p>
+                    <p className="text-red-700 text-sm">Limited seating - Book early to secure your spot!</p>
+                  </div>
                 </div>
-              </div>
+              )}
               
               <div className="mt-6 p-6 bg-blue-50 rounded-lg border border-blue-200">
                 <h4 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
@@ -657,7 +917,7 @@ function App() {
                   </div>
                   <div className="mt-3 p-3 bg-blue-100 rounded-lg">
                     <p className="text-sm font-medium text-blue-800">GPay Number:</p>
-                    <p className="text-lg font-bold text-blue-900">+91-99741 20608</p>
+                    <p className="text-lg font-bold text-blue-900">{contentData.reservation.gpayNumber}</p>
                   </div>
                   <p className="text-sm text-gray-600 mt-2">
                     Advance payment is required to secure your reservation. We accept cash or Google Pay to the number above.
@@ -695,7 +955,7 @@ function App() {
                 <span className="text-2xl font-serif font-bold text-amber-400">Ba's Supper Club</span>
               </div>
               <p className="text-gray-400 leading-relaxed">
-                Home-style Mexican delicacies prepared with love by Ba, bringing authentic flavors to Jamnagar.
+                {latestMenu ? `Home-style ${latestMenu.title.toLowerCase()} delicacies` : 'Home-style delicacies'} prepared with love by Ba, bringing authentic flavors to Jamnagar.
               </p>
             </div>
             
@@ -704,7 +964,7 @@ function App() {
               <div className="space-y-2 text-gray-400">
                 <div className="flex items-center">
                   <Phone className="w-4 h-4 mr-2" />
-                  <span>+91-99741 20608 (Bina)</span>
+                  <span>{contentData.reservation.phoneNumber} ({contentData.reservation.contactPerson})</span>
                 </div>
                 <div className="flex items-start">
                   <MapPin className="w-4 h-4 mr-2 mt-1 flex-shrink-0" />
@@ -716,7 +976,7 @@ function App() {
                 </div>
                 <div className="flex items-center">
                   <Mail className="w-4 h-4 mr-2" />
-                  <span>beenapparekh@gmail.com</span>
+                  <span>{contentData.feedback.adminEmail}</span>
                 </div>
               </div>
             </div>
@@ -724,10 +984,10 @@ function App() {
             <div>
               <h4 className="text-lg font-serif font-semibold mb-4 text-amber-400">Experience</h4>
               <ul className="space-y-2 text-gray-400">
-                <li>• Complete menu ₹1,200</li>
-                <li>• Maximum 8 guests</li>
+                <li>• Complete menu ₹{latestMenu?.pricePerPerson || 1200}</li>
+                <li>• Maximum {latestMenu?.maxPersons || 8} guests</li>
                 <li>• Advance booking required</li>
-                <li>• Children under 12 not permitted</li>
+                <li>• Children under 12 {latestMenu?.childrenAllowed ? 'permitted' : 'not permitted'}</li>
               </ul>
             </div>
           </div>

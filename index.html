@@ -5,6 +5,18 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ba's Supper Club - Home-style Dining in Jamnagar</title>
+
+    <script>
+      // Load basePath from config.json before anything else
+      fetch('./config.json')
+        .then(res => res.json())
+        .then(cfg => {
+          window.__BASE_PATH__ = cfg.basePath || '/';
+          const script = document.createElement('script');
+          script.src = window.__BASE_PATH__ + 'assets/index.js'; // Adjust if using hash
+          document.body.appendChild(script);
+        });
+    </script>
   </head>
   <body>
     <div id="root"></div>

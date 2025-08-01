@@ -1,0 +1,128 @@
+{
+  "home": {
+    "summary": "The primary purpose of my supper club is to create a unique, intimate, and social dining experience, centered around high-quality food and meaningful conversation. It aims to foster a sense of community and connection among guests, encouraging interaction and engagement throughout the evening."
+  },
+  "menus": [
+    {
+      "id": "menu-2025-07-27",
+      "date": "2025-07-27",
+      "title": "Ba's Mexican Menu",
+      "pricePerPerson": 1200,
+      "maxPersons": 8,
+      "childrenAllowed": false,
+      "categories": {
+        "mainCourse": [
+          {
+            "name": "Enchiladas",
+            "description": "Rolled tortillas filled with vegies and cheese, topped with Ba's signature sauce"
+          },
+          {
+            "name": "Mexican Rice and Beans",
+            "description": "Authentic Mexican rice served with seasoned black beans, fresh guacamole, sour cream, and various homemade salsas"
+          }
+        ],
+        "desserts": [
+          {
+            "name": "Churros",
+            "description": "Golden fried dough sticks rolled in cinnamon sugar, served with chocolate dipping sauce"
+          }
+        ]
+      }
+    }
+  ],
+  "feedback": {
+    "adminEmail": "beenapparekh@gmail.com"
+  },
+  "reviews": [
+    {
+      "id": "review-1",
+      "name": "Priya Sharma",
+      "email": "priya.sharma@example.com",
+      "role": "Regular Guest from Jamnagar",
+      "content": "Ba's kitchen feels like home away from home. The warmth, the flavors, and Ba's personal touch make every meal special. It's like being invited to a dear friend's family dinner.",
+      "rating": 5,
+      "date": "2025-01-15",
+      "status": "active"
+    },
+    {
+      "id": "review-2",
+      "name": "Rajesh Patel",
+      "email": "rajesh.patel@example.com",
+      "role": "Food Enthusiast",
+      "content": "I've never experienced such authentic, home-style cooking in a restaurant setting. Ba treats every guest like family, and you can taste the love in every dish.",
+      "rating": 5,
+      "date": "2025-01-10",
+      "status": "active"
+    },
+    {
+      "id": "review-3",
+      "name": "Meera Joshi",
+      "email": "meera.joshi@example.com",
+      "role": "Local Resident",
+      "content": "Ba's Kitchen has brought something truly special to Jamnagar. The intimate setting and Ba's personal care make you feel like you're dining at your grandmother's house.",
+      "rating": 5,
+      "date": "2025-01-05",
+      "status": "active"
+    }
+  ],
+  "gallery": [
+    {
+      "id": "album-1",
+      "name": "First Mexican Night",
+      "description": "Ba's inaugural Mexican cuisine evening featuring authentic enchiladas and warm hospitality. Guests were delighted by the authentic flavors and intimate settings",
+      "date": "2025-01-20",
+      "photos": [
+        "photo1.jpg",
+        "photo2.jpg",
+        "photo3.jpg"
+      ]
+    },
+    {
+      "id": "album-2",
+      "name": "Valentine's Special",
+      "description": "A romantic evening with couples enjoying Ba's special Italian menu. The intimate candlelit setting created perfect moments for our guests.",
+      "date": "2025-02-14",
+      "photos": [
+        "photo4.jpg",
+        "photo5.jpg"
+      ]
+    },
+    {
+      "id": "album-3",
+      "name": "Family Gathering",
+      "description": "Three generations came together for Ba's traditional Gujarati thali. The warmth of home-cooked food brought smiles to every face.",
+      "date": "2025-03-10",
+      "photos": [
+        "photo6.jpg",
+        "photo7.jpg",
+        "photo8.jpg"
+      ]
+    },
+    {
+      "id": "album-4",
+      "name": "Birthday Celebration",
+      "description": "A surprise birthday dinner featuring Ba's signature continental dishes. The birthday guest was moved to tears by the thoughtful presentation.",
+      "date": "2025-04-05",
+      "photos": [
+        "photo9.jpg",
+        "photo10.jpg"
+      ]
+    },
+    {
+      "id": "album-5",
+      "name": "Wine Pairing Evening",
+      "description": "An elegant French cuisine night with carefully selected wine pairings. Guests learned about flavor combinations while enjoying Ba's culinary artistry.",
+      "date": "2025-05-15",
+      "photos": [
+        "photo11.jpg",
+        "photo12.jpg",
+        "photo13.jpg"
+      ]
+    }
+  ],
+  "reservation": {
+    "phoneNumber": "+91-99741 20608",
+    "gpayNumber": "+91-99741 20608",
+    "contactPerson": "Bina Parekh"
+  }
+}
