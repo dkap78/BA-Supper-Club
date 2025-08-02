@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { format } from 'date-fns';
 import { 
   Menu, 
   X, 
@@ -19,7 +20,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Settings,
-  Lock
+  Lock,
+  Soup
 } from 'lucide-react';
 import AdminDashboard from './components/AdminDashboard';
 
@@ -35,6 +37,7 @@ interface ContentData {
     maxPersons: number;
     childrenAllowed: boolean;
     categories: {
+      starter: Array<{ name: string; description: string; }>;
       mainCourse: Array<{ name: string; description: string; }>;
       desserts: Array<{ name: string; description: string; }>;
     };
@@ -75,6 +78,7 @@ function App() {
   const [adminPassword, setAdminPassword] = useState('');
   const [adminError, setAdminError] = useState('');
   const [contentData, setContentData] = useState<ContentData | null>(null);
+  const [pemphletData, setPemphletData] = useState('');
   const [selectedAlbum, setSelectedAlbum] = useState<any>(null);
   const [currentGalleryIndex, setCurrentGalleryIndex] = useState(0);
   const [feedbackForm, setFeedbackForm] = useState({
@@ -87,6 +91,7 @@ function App() {
 
   useEffect(() => {
     loadContentData();
+    loadPemphletData();
     
     // Check if admin route is accessed
     const currentPath = window.location.pathname;
@@ -104,6 +109,16 @@ function App() {
       setContentData(data);
     } catch (error) {
       console.error('Error loading content:', error);
+    }
+  };
+
+  const loadPemphletData = async () => {
+    try {
+      const response = await fetch('/data/whatsapp-pamphlet.html');
+      const data = await response.text();
+      setPemphletData(data);
+    } catch (error) {
+      console.error('Error loading pemphlet content:', error);
     }
   };
 
@@ -220,53 +235,54 @@ function App() {
 
   const generateWhatsAppPamphlet = () => {
     if (!latestMenu) return;
-    
-    const pamphletContent = `
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Ba's Supper Club - ${latestMenu.title}</title>
-    <meta charset="UTF-8">
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        .header { text-align: center; color: #f59e0b; }
-        .menu-item { margin: 10px 0; }
-        .price { font-size: 24px; font-weight: bold; color: #d97706; }
-    </style>
-</head>
-<body>
-    <div class="header">
-        <h1>Ba's Supper Club</h1>
-        <h2>${latestMenu.title}</h2>
-        <h3>${new Date(latestMenu.date).toLocaleDateString()}</h3>
-    </div>
-    
-    <div class="price">₹${latestMenu.pricePerPerson} per person</div>
-    
-    <h3>Main Course:</h3>
-    ${latestMenu.categories.mainCourse.map(item => 
-      `<div class="menu-item"><strong>${item.name}</strong>: ${item.description}</div>`
-    ).join('')}
-    
-    <h3>Desserts:</h3>
-    ${latestMenu.categories.desserts.map(item => 
-      `<div class="menu-item"><strong>${item.name}</strong>: ${item.description}</div>`
-    ).join('')}
-    
-    <p><strong>Reservation:</strong> ${contentData.reservation.phoneNumber} (${contentData.reservation.contactPerson})</p>
-    <p><strong>Max Guests:</strong> ${latestMenu.maxPersons}</p>
-    <p><strong>Children:</strong> ${latestMenu.childrenAllowed ? 'Allowed' : 'Not permitted'}</p>
-</body>
-</html>
-    `;
-    
-    const blob = new Blob([pamphletContent], { type: 'text/html' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `bas-supper-club-${latestMenu.date}.html`;
-    a.click();
-    URL.revokeObjectURL(url);
+
+    var htmlText = pemphletData;
+
+    if (htmlText.length == 0) {
+      alert('Template not found, please contact site administrator.');
+    } else {
+      var menuItems = "";
+
+      if (latestMenu.categories.starter && latestMenu.categories.starter.length > 0) {
+        menuItems = `    
+          <h3>Starter:</h3>
+          ${latestMenu.categories.starter.map(item => 
+            `<div class="menu-item"><strong>${item.name}</strong>: ${item.description}</div>`
+          ).join('')}`;
+      }
+
+      if (latestMenu.categories.mainCourse && latestMenu.categories.mainCourse.length > 0) {
+        menuItems = `${menuItems}      
+          <h3>Main Course:</h3>
+          ${latestMenu.categories.mainCourse.map(item => 
+            `<div class="menu-item"><strong>${item.name}</strong>: ${item.description}</div>`
+          ).join('')}`;
+      }
+      
+      if (latestMenu.categories.desserts && latestMenu.categories.desserts.length > 0) {
+        menuItems = `${menuItems}
+          <h3>Desserts:</h3>
+          ${latestMenu.categories.desserts.map(item => 
+            `<div class="menu-item"><strong>${item.name}</strong>: ${item.description}</div>`
+          ).join('')}`;
+      }
+
+      htmlText = htmlText.replaceAll("{{event_title}}", latestMenu.title);
+      htmlText = htmlText.replaceAll("{{event_date}}", format(new Date(latestMenu.date).toLocaleDateString(), 'EEE, dd-MMM-yyyy'));
+      htmlText = htmlText.replaceAll("{{event_price}}", latestMenu.pricePerPerson.toString());
+      htmlText = htmlText.replaceAll("{{event_menu_items}}", menuItems);
+      htmlText = htmlText.replaceAll("{{event_max_guests}}", latestMenu.maxPersons.toString());
+      htmlText = htmlText.replaceAll("{{event_reservation_ph_number}}", contentData.reservation.phoneNumber);
+      htmlText = htmlText.replaceAll("{{event_reservation_cont_person}}", contentData.reservation.contactPerson);
+
+      const blob = new Blob([htmlText], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `bas-supper-club-${latestMenu.date}.html`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
   };
 
   const displayedGalleryAlbums = galleryAlbums.slice(currentGalleryIndex, currentGalleryIndex + 4);
@@ -468,7 +484,7 @@ function App() {
               </p>
               <div className="mt-8 inline-block bg-gradient-to-r from-red-600 to-orange-500 rounded-xl px-8 py-4 border-2 border-yellow-400">
                 <div className="text-yellow-200 text-sm font-medium uppercase tracking-wide">Special Event</div>
-                <div className="text-2xl font-bold text-white">{new Date(latestMenu.date).toLocaleDateString()}</div>
+                <div className="text-2xl font-bold text-white">{format(new Date(latestMenu.date).toLocaleDateString(), 'EEE, dd-MMM-yyyy')}</div>
                 <div className="text-3xl font-bold text-white">Complete Menu</div>
                 <div className="text-4xl font-serif font-bold text-white">₹{latestMenu.pricePerPerson}</div>
                 <div className="text-amber-100 text-sm">Per Person | All Items Included</div>
@@ -483,7 +499,26 @@ function App() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {Array.isArray(latestMenu.categories.starter) && latestMenu.categories.starter.length > 0 && (
+              <div className="bg-gray-900 rounded-xl p-8 border border-amber-600/20 hover:border-amber-600/40 transition-all">
+                <div className="flex items-center mb-6">
+                  <div className="text-amber-500 mr-3">
+                    <Soup className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-2xl font-serif font-semibold text-white">Starter</h3>
+                </div>
+                
+                <div className="space-y-6">
+                  {latestMenu.categories.starter.map((item, idx) => (
+                    <div key={idx} className="border-b border-gray-700 pb-4 last:border-b-0">
+                      <h4 className="text-lg font-medium text-amber-400 mb-2">{item.name}</h4>
+                      <p className="text-gray-400 text-sm leading-relaxed">{item.description}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>)}
+
               <div className="bg-gray-900 rounded-xl p-8 border border-amber-600/20 hover:border-amber-600/40 transition-all">
                 <div className="flex items-center mb-6">
                   <div className="text-amber-500 mr-3">

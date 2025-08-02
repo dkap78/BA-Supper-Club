@@ -297,7 +297,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
 
         {editingMenu && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-xl p-6 max-w-2xl w-full max-h-96 overflow-y-auto">
+            <div className="bg-white rounded-xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
               <div className="flex justify-between items-center mb-4">
                 <h4 className="text-lg font-semibold">Edit Menu</h4>
                 <button
@@ -395,7 +395,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
               </div>
 
               <div className="space-y-4">
-                <div>
+                {Array.isArray(editingMenu.categories.starter) && editingMenu.categories.starter.length > 0 && (<div>
                   <h6 className="font-medium">Starter ({editingMenu.categories.starter.length})</h6>
                   {editingMenu.categories.starter.map((item: any, index: number) => (
                     <div key={index} className="bg-gray-50 p-2 rounded mt-1 flex justify-between items-center">
@@ -410,8 +410,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                       </button>
                     </div>
                   ))}
-                </div>
-                <div>
+                </div>)}
+
+                {Array.isArray(editingMenu.categories.mainCourse) && editingMenu.categories.mainCourse.length > 0 && (<div>
                   <h6 className="font-medium">Main Course ({editingMenu.categories.mainCourse.length})</h6>
                   {editingMenu.categories.mainCourse.map((item: any, index: number) => (
                     <div key={index} className="bg-gray-50 p-2 rounded mt-1 flex justify-between items-center">
@@ -426,8 +427,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                       </button>
                     </div>
                   ))}
-                </div>
-                <div>
+                </div>)}
+                
+                {Array.isArray(editingMenu.categories.desserts) && editingMenu.categories.desserts.length > 0 && (<div>
                   <h6 className="font-medium">Desserts ({editingMenu.categories.desserts.length})</h6>
                   {editingMenu.categories.desserts.map((item: any, index: number) => (
                     <div key={index} className="bg-gray-50 p-2 rounded mt-1 flex justify-between items-center">
@@ -442,7 +444,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                       </button>
                     </div>
                   ))}
-                </div>
+                </div>)}
               </div>
 
               <div className="flex justify-end space-x-2 mt-6">
