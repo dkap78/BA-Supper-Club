@@ -171,17 +171,6 @@
         "photo9.jpg",
         "photo10.jpg"
       ]
-    },
-    {
-      "id": "album-5",
-      "name": "Wine Pairing Evening",
-      "description": "An elegant French cuisine night with carefully selected wine pairings. Guests learned about flavor combinations while enjoying Ba's culinary artistry.",
-      "date": "2025-05-15",
-      "photos": [
-        "photo11.jpg",
-        "photo12.jpg",
-        "photo13.jpg"
-      ]
     }
   ],
   "reservation": {
