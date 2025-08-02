@@ -861,7 +861,7 @@ function App() {
                       {album.description}
                     </p>
                     <div className="text-amber-400 text-xs font-medium">
-                      {new Date(album.date).toLocaleDateString()} • {album.photos.length} Photos
+                      {format(new Date(album.date).toLocaleDateString(), 'dd-MMM-yyyy')} • {album.photos.length} Photos
                     </div>
                   </div>
                 </div>
@@ -927,14 +927,15 @@ function App() {
               
               {latestMenu && (
                 <div className="mt-8 p-6 bg-amber-50 rounded-lg">
-                  <h4 className="text-lg font-semibold text-gray-900 mb-3">{latestMenu.title} - {new Date(latestMenu.date).toLocaleDateString()}</h4>
+                  <h4 className="text-lg font-semibold text-gray-900 mb-3">{latestMenu.title} - {format(new Date(latestMenu.date).toLocaleDateString(), 'EEE, dd-MMM-yyyy')}</h4>
                   <p className="text-gray-700 mb-2">₹{latestMenu.pricePerPerson} per person for the complete experience:</p>
                   <p className="text-amber-700 font-medium">
-                    {latestMenu.categories.mainCourse.map(item => item.name).join(' • ')} • {latestMenu.categories.desserts.map(item => item.name).join(' • ')}
+                    {(latestMenu.categories.starter && latestMenu.categories.starter.length > 0 ? latestMenu.categories.starter.map(item => item.name).join(' • ') : '')}&nbsp;•&nbsp;
+                    {(latestMenu.categories.mainCourse && latestMenu.categories.mainCourse.length > 0 ? latestMenu.categories.mainCourse.map(item => item.name).join(' • ') : '')}&nbsp;•&nbsp;
+                    {(latestMenu.categories.desserts && latestMenu.categories.desserts.length > 0 ? latestMenu.categories.desserts.map(item => item.name).join(' • ') : '')}
                   </p>
-                  <p className="text-gray-600 text-sm mt-2">Served with guacamole, sour cream, and homemade salsas</p>
                   <div className="mt-3 p-3 bg-red-100 rounded-lg border border-red-300">
-                    <p className="text-red-800 font-semibold text-sm">📅 Special Event: {new Date(latestMenu.date).toLocaleDateString()}</p>
+                    <p className="text-red-800 font-semibold text-sm">📅 Special Event: {format(new Date(latestMenu.date).toLocaleDateString(), 'EEE, dd-MMM-yyyy')}</p>
                     <p className="text-red-700 text-sm">Limited seating - Book early to secure your spot!</p>
                   </div>
                 </div>
