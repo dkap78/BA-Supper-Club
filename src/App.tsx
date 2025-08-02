@@ -558,11 +558,12 @@ function App() {
             
             <div className="text-center mt-12">
               <div className="bg-gray-900 rounded-xl p-6 border border-amber-600/20 inline-block">
-                <p className="text-gray-300 text-lg mb-2">{new Date(latestMenu.date).toLocaleDateString()} experience includes:</p>
+                <p className="text-gray-300 text-lg mb-2">{format(new Date(latestMenu.date).toLocaleDateString(), 'EEE, dd-MMM-yyyy')} experience includes:</p>
                 <p className="text-amber-400 font-medium">
-                  {latestMenu.categories.mainCourse.map(item => item.name).join(' • ')} • {latestMenu.categories.desserts.map(item => item.name).join(' • ')}
+                  {(latestMenu.categories.starter && latestMenu.categories.starter.length > 0 ? latestMenu.categories.starter.map(item => item.name).join(' • ') : '')}&nbsp;•&nbsp;
+                  {(latestMenu.categories.mainCourse && latestMenu.categories.mainCourse.length > 0 ? latestMenu.categories.mainCourse.map(item => item.name).join(' • ') : '')}&nbsp;•&nbsp;
+                  {(latestMenu.categories.desserts && latestMenu.categories.desserts.length > 0 ? latestMenu.categories.desserts.map(item => item.name).join(' • ') : '')}
                 </p>
-                <p className="text-gray-400 text-sm mt-2">Served with guacamole, sour cream, and various homemade salsas</p>
               </div>
             </div>
           </div>
