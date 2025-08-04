@@ -1,6 +1,6 @@
 {
   "home": {
-    "summary": "The primary purpose of my supper club is to create a unique, intimate, and social dining experience, centered around high-quality food and meaningful conversation. It aims to foster a sense of community and connection among guests, encouraging interaction and engagement throughout the evening...."
+    "summary": "The primary purpose of my supper club is to create a unique, intimate, and social dining experience, centered around high-quality food and meaningful conversation. It aims to foster a sense of community and connection among guests, encouraging interaction and engagement throughout the evening."
   },
   "menus": [
     {
@@ -25,6 +25,70 @@
           {
             "name": "Churros",
             "description": "Golden fried dough sticks rolled in cinnamon sugar, served with chocolate dipping sauce"
+          }
+        ]
+      }
+    },
+    {
+      "id": "menu-1754139000249",
+      "date": "2025-08-02",
+      "title": "3-Course Mexican Menu (Public)",
+      "pricePerPerson": 1300,
+      "maxPersons": 8,
+      "childrenAllowed": false,
+      "categories": {
+        "starter": [
+          {
+            "name": "Salsa",
+            "description": "Homemade Salsa with fresh tomatoes"
+          }
+        ],
+        "mainCourse": [
+          {
+            "name": "Enchiladas",
+            "description": "Rolled tortillas filled with vegies and cheese, topped with Ba's signature sauce"
+          },
+          {
+            "name": "Mexican Rice and Beans",
+            "description": "Authentic Mexican rice served with seasoned black beans, fresh guacamole, sour cream, and various homemade salsas"
+          }
+        ],
+        "desserts": [
+          {
+            "name": "Churros",
+            "description": "Golden fried dough sticks rolled in cinnamon sugar, served with chocolate dipping sauce"
+          }
+        ]
+      }
+    },
+    {
+      "id": "menu-1754145135359",
+      "date": "2025-08-23",
+      "title": "Ba's Italian Menu",
+      "pricePerPerson": 1200,
+      "maxPersons": 8,
+      "childrenAllowed": false,
+      "categories": {
+        "starter": [
+          {
+            "name": "Sautéed Exotic Vegetables in Olive Oil",
+            "description": "A colorful blend of seasonal exotic vegetables, lightly sautéed in fragrant olive oil with hints of garlic and herbs. Crisp, vibrant, and full of natural flavor—an elegant and healthy beginning."
+          }
+        ],
+        "mainCourse": [
+          {
+            "name": "Baked Spinach with Spaghetti",
+            "description": "Creamy spaghetti tossed with tender spinach, garlic, and herbs, baked under a golden layer of cheese. A warm, cheesy, and comforting delight."
+          },
+          {
+            "name": "Garlic Bread",
+            "description": "Crisp and buttery with a soft center, this garlic-infused baguette is toasted to perfection with Ba's special recipe and sprinkled with herbs. A classic and flavorful companion to your pasta."
+          }
+        ],
+        "desserts": [
+          {
+            "name": "Tiramisu",
+            "description": "A luscious Italian favorite—espresso-soaked ladyfingers layered with airy mascarpone cream and finished with a dusting of cocoa. Light, dreamy, and decadently satisfying."
           }
         ]
       }
