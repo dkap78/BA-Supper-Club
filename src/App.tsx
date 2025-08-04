@@ -473,11 +473,7 @@ function App() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4">
-                {latestMenu.title} - {new Date(latestMenu.date).toLocaleDateString('en-US', { 
-                  year: 'numeric', 
-                  month: 'long', 
-                  day: 'numeric' 
-                })}
+                {latestMenu.title} - {format(new Date(latestMenu.date).toLocaleDateString(), 'MMMM dd, yyyy')}
               </h2>
               <p className="text-xl text-gray-300 max-w-3xl mx-auto">
                 A special dining experience featuring authentic recipes that Ba has perfected over the years
