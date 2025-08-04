@@ -183,6 +183,14 @@ function App() {
   const galleryAlbums = contentData.gallery
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
+
+
+  const formatDate = (date: string) => {
+    var formattedDate = format(new Date(date), 'EEE, dd-MMM-yyyy');
+
+    return formattedDate;
+  };
+
   const nextTestimonial = () => {
     setCurrentTestimonial((prev) => (prev + 1) % activeReviews.length);
   };
@@ -268,7 +276,7 @@ function App() {
       }
 
       htmlText = htmlText.replaceAll("{{event_title}}", latestMenu.title);
-      htmlText = htmlText.replaceAll("{{event_date}}", format(new Date(latestMenu.date).toLocaleDateString(), 'EEE, dd-MMM-yyyy'));
+      htmlText = htmlText.replaceAll("{{event_date}}", formatDate(latestMenu.date));
       htmlText = htmlText.replaceAll("{{event_price}}", latestMenu.pricePerPerson.toString());
       htmlText = htmlText.replaceAll("{{event_menu_items}}", menuItems);
       htmlText = htmlText.replaceAll("{{event_max_guests}}", latestMenu.maxPersons.toString());
@@ -473,14 +481,14 @@ function App() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4">
-                {latestMenu.title} - {format(new Date(latestMenu.date).toLocaleDateString(), 'MMMM dd, yyyy')}
+                {latestMenu.title} - {format(new Date(latestMenu.date), 'MMMM dd, yyyy')}
               </h2>
               <p className="text-xl text-gray-300 max-w-3xl mx-auto">
                 A special dining experience featuring authentic recipes that Ba has perfected over the years
               </p>
               <div className="mt-8 inline-block bg-gradient-to-r from-red-600 to-orange-500 rounded-xl px-8 py-4 border-2 border-yellow-400">
                 <div className="text-yellow-200 text-sm font-medium uppercase tracking-wide">Special Event</div>
-                <div className="text-2xl font-bold text-white">{format(new Date(latestMenu.date).toLocaleDateString(), 'EEE, dd-MMM-yyyy')}</div>
+                <div className="text-2xl font-bold text-white">{formatDate(latestMenu.date)}</div>
                 <div className="text-3xl font-bold text-white">Complete Menu</div>
                 <div className="text-4xl font-serif font-bold text-white">₹{latestMenu.pricePerPerson}</div>
                 <div className="text-amber-100 text-sm">Per Person | All Items Included</div>
@@ -554,7 +562,7 @@ function App() {
             
             <div className="text-center mt-12">
               <div className="bg-gray-900 rounded-xl p-6 border border-amber-600/20 inline-block">
-                <p className="text-gray-300 text-lg mb-2">{format(new Date(latestMenu.date).toLocaleDateString(), 'EEE, dd-MMM-yyyy')} experience includes:</p>
+                <p className="text-gray-300 text-lg mb-2">{formatDate(latestMenu.date)} experience includes:</p>
                 <p className="text-amber-400 font-medium">
                   {(latestMenu.categories.starter && latestMenu.categories.starter.length > 0 ? latestMenu.categories.starter.map(item => item.name).join(' • ') : '')}&nbsp;•&nbsp;
                   {(latestMenu.categories.mainCourse && latestMenu.categories.mainCourse.length > 0 ? latestMenu.categories.mainCourse.map(item => item.name).join(' • ') : '')}&nbsp;•&nbsp;
@@ -857,7 +865,7 @@ function App() {
                       {album.description}
                     </p>
                     <div className="text-amber-400 text-xs font-medium">
-                      {format(new Date(album.date).toLocaleDateString(), 'dd-MMM-yyyy')} • {album.photos.length} Photos
+                      {format(new Date(album.date), 'dd-MMM-yyyy')} • {album.photos.length} Photos
                     </div>
                   </div>
                 </div>
@@ -923,7 +931,7 @@ function App() {
               
               {latestMenu && (
                 <div className="mt-8 p-6 bg-amber-50 rounded-lg">
-                  <h4 className="text-lg font-semibold text-gray-900 mb-3">{latestMenu.title} - {format(new Date(latestMenu.date).toLocaleDateString(), 'EEE, dd-MMM-yyyy')}</h4>
+                  <h4 className="text-lg font-semibold text-gray-900 mb-3">{latestMenu.title} - {formatDate(latestMenu.date)}</h4>
                   <p className="text-gray-700 mb-2">₹{latestMenu.pricePerPerson} per person for the complete experience:</p>
                   <p className="text-amber-700 font-medium">
                     {(latestMenu.categories.starter && latestMenu.categories.starter.length > 0 ? latestMenu.categories.starter.map(item => item.name).join(' • ') : '')}&nbsp;•&nbsp;
@@ -931,7 +939,7 @@ function App() {
                     {(latestMenu.categories.desserts && latestMenu.categories.desserts.length > 0 ? latestMenu.categories.desserts.map(item => item.name).join(' • ') : '')}
                   </p>
                   <div className="mt-3 p-3 bg-red-100 rounded-lg border border-red-300">
-                    <p className="text-red-800 font-semibold text-sm">📅 Special Event: {format(new Date(latestMenu.date).toLocaleDateString(), 'EEE, dd-MMM-yyyy')}</p>
+                    <p className="text-red-800 font-semibold text-sm">📅 Special Event: {formatDate(latestMenu.date)}</p>
                     <p className="text-red-700 text-sm">Limited seating - Book early to secure your spot!</p>
                   </div>
                 </div>
