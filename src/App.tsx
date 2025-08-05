@@ -159,13 +159,35 @@ function App() {
     setShowAdminDashboard(false);
     setShowAdminLogin(false);
     setAdminPassword('');
-    setAdminError('');
-  };
-
-  if (!contentData) {
-    return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="text-white text-xl">Loading...</div>
+        {selectedAlbum.photos && selectedAlbum.photos.length > 0 ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {selectedAlbum.photos.map((photo: string, index: number) => (
+              <div key={index} className="aspect-square bg-gray-200 rounded-lg overflow-hidden">
+                <img
+                  src={`/uploads/gallery/${photo}`}
+                  alt={`${selectedAlbum.name} - Photo ${index + 1}`}
+                  className="w-full h-full object-cover hover:scale-105 transition-transform cursor-pointer"
+                  onError={(e) => {
+                    // Fallback for images that don't exist
+                    const target = e.target as HTMLImageElement;
+                    target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtc2l6ZT0iMTgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIiBmaWxsPSIjOTk5Ij5JbWFnZSBOb3QgRm91bmQ8L3RleHQ+PC9zdmc+';
+                    target.className = 'w-full h-full object-contain';
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    // Open image in new tab for full view
+                    window.open(`/uploads/gallery/${photo}`, '_blank');
+                  }}
+                />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-8 text-gray-500">
+            <ChefHat className="w-16 h-16 mx-auto mb-4 opacity-50" />
+            <p>No photos in this album yet.</p>
+          </div>
+        )}
       </div>
     );
   }
@@ -856,8 +878,24 @@ function App() {
                   className="bg-gray-900 rounded-xl overflow-hidden border border-amber-600/20 hover:border-amber-600/40 transition-all group cursor-pointer"
                   onClick={() => setSelectedAlbum(album)}
                 >
-                  <div className="aspect-w-16 aspect-h-12 bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
-                    <ChefHat className="w-16 h-16 text-white opacity-60" />
+                  <div className="aspect-w-16 aspect-h-12 bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center relative overflow-hidden">
+                    {album.photos && album.photos.length > 0 ? (
+                      <img
+                        src={`/uploads/gallery/${album.photos[0]}`}
+                        alt={album.name}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          // Fallback to icon if image doesn't exist
+                          (e.target as HTMLImageElement).style.display = 'none';
+                          const parent = (e.target as HTMLImageElement).parentElement;
+                          if (parent) {
+                            const icon = parent.querySelector('.fallback-icon');
+                            if (icon) (icon as HTMLElement).style.display = 'block';
+                          }
+                        }}
+                      />
+                    ) : null}
+                    <ChefHat className="w-16 h-16 text-white opacity-60 fallback-icon" style={{ display: album.photos && album.photos.length > 0 ? 'none' : 'block' }} />
                   </div>
                   <div className="p-6">
                     <h3 className="text-xl font-serif font-semibold text-white mb-2">
