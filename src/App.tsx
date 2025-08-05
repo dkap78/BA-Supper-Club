@@ -214,30 +214,32 @@ function App() {
   const handleFeedbackSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    const feedbackData = {
-      id: `feedback-${Date.now()}`,
-      ...feedbackForm,
-      date: new Date().toISOString().split('T')[0]
-    };
-
     try {
-      // Save feedback locally (in real app, this would be sent to backend)
-      console.log('Saving feedback:', feedbackData);
-      
-      // Send email to admin (in real app, this would be handled by backend)
-      console.log('Sending email to admin:', contentData.feedback.adminEmail);
-      
-      alert('Thank you for your feedback! We have received your submission.');
-      setFeedbackForm({
-        name: '',
-        email: '',
-        rating: 0,
-        content: '',
-        recommend: ''
+      const response = await fetch('http://localhost:3001/api/submit-feedback', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(feedbackForm),
       });
+
+      const result = await response.json();
+      
+      if (result.success) {
+        alert(result.message);
+        setFeedbackForm({
+          name: '',
+          email: '',
+          rating: 0,
+          content: '',
+          recommend: ''
+        });
+      } else {
+        alert(result.message || 'Error submitting feedback. Please try again.');
+      }
     } catch (error) {
       console.error('Error submitting feedback:', error);
-      alert('Error submitting feedback. Please try again.');
+      alert('Error submitting feedback. Please make sure the server is running and try again.');
     }
   };
 
