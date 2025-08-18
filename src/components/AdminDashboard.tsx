@@ -88,6 +88,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
   // Gallery tab state
   const [editingAlbum, setEditingAlbum] = useState<any>(null);
 
+  // Image upload state
+  const [uploadingImages, setUploadingImages] = useState(false);
+  const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null);
+
   // Password tab state
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -95,9 +99,29 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
   const [passwordError, setPasswordError] = useState('');
   const [passwordSuccess, setPasswordSuccess] = useState('');
 
+  const [apiServer, setApiServer] = useState('http://localhost:3001/api/');
+
   useEffect(() => {
     loadData();
   }, []);
+
+  const init = async() => {
+    try {
+      const metaApiServer = document.querySelector('meta[name="apiServer"]');
+      if (metaApiServer) {
+        const apiS = metaApiServer.getAttribute('content');
+        if (apiS) {
+          setApiServer(apiS);
+          console.log("Api Server: ", apiS)
+        }
+      }
+
+      loadData();
+    } catch (error) {
+      console.error("Error initializing server:", error);
+    } finally {
+    }
+  };
 
   const loadData = async () => {
     try {
@@ -115,19 +139,19 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
     }
   };
 
-  const saveContentData = async (showReloadMessage: boolean = false) => {
+  const saveContentData = async (data: any, showReloadMessage: boolean = false) => {
     try {
       // Update content data via API
-      const contentResponse = await fetch('http://localhost:3001/api/update-content', {
+      const contentResponse = await fetch(apiServer + 'update-content', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(contentData),
+        body: JSON.stringify(data),
       });
 
       // Update feedback data via API
-      const feedbackResponse = await fetch('http://localhost:3001/api/update-feedbacks', {
+      const feedbackResponse = await fetch(apiServer + 'update-feedbacks', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -145,6 +169,56 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
     } catch (error) {
       console.error('Error saving data:', error);
       alert('Error saving content! Please make sure the server is running.');
+    }
+  };
+
+  const handleImageUpload = async (albumId: string, files: FileList) => {
+    if (!files || files.length === 0) return [];
+
+    setUploadingImages(true);
+    const formData = new FormData();
+    formData.append('albumId', albumId);
+    
+    for (let i = 0; i < files.length; i++) {
+      formData.append('images', files[i]);
+    }
+
+    try {
+      const response = await fetch(apiServer + 'upload-gallery-images', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const result = await response.json();
+      
+      if (result.success) {
+        return result.files;
+      } else {
+        throw new Error(result.message);
+      }
+    } catch (error) {
+      console.error('Error uploading images:', error);
+      alert('Error uploading images. Please try again.');
+      return [];
+    } finally {
+      setUploadingImages(false);
+    }
+  };
+
+  const handleDeleteImage = async (filename: string) => {
+    try {
+      const response = await fetch(`${apiServer}delete-gallery-image/${filename}`, {
+        method: 'DELETE',
+      });
+
+      const result = await response.json();
+      
+      if (!result.success) {
+        throw new Error(result.message);
+      }
+    } catch (error) {
+      console.error('Error deleting image:', error);
+      alert('Error deleting image. Please try again.');
     }
   };
 
@@ -183,7 +257,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
         </div>
       </div>
       <button
-        onClick={() => saveContentData()}
+        onClick={() => saveContentData(contentData)}
         className="bg-amber-600 text-white px-4 py-2 rounded-md hover:bg-amber-700 flex items-center space-x-2"
       >
         <Save className="w-4 h-4" />
@@ -244,6 +318,27 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
       }
     };
 
+    const saveMenu = () => {
+      //clone the existing contentData and update changedMenu in it
+      var updatedData = structuredClone(contentData);
+      for (var i = 0; i < updatedData.menus.length; i++) {
+        if (updatedData.menus[i].id === editingMenu.id) {
+          updatedData.menus[i] = editingMenu;
+          break;
+        }
+      }
+
+      updateMenu(editingMenu);      //update contentData
+      setEditingMenu(null);         //reset editingmenu
+
+      // Save updated data to json file by calling api. Though
+      // contentData is updated it will not be reflected until next
+      // render, so we have created cloned object and updated it
+      // with latest change and use it to save the changes to json
+      // file.
+      saveContentData(updatedData);
+    };
+    
     // Function to delete a menu item from a category
     const deleteMenuItem = (category: string, index: number) => {
       if (editingMenu) {
@@ -456,9 +551,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                 </button>
                 <button
                   onClick={() => {
-                    updateMenu(editingMenu);
-                    setEditingMenu(null);
-                    saveContentData();
+                    saveMenu();
                   }}
                   className="bg-amber-600 text-white px-4 py-2 rounded-md hover:bg-amber-700"
                 >
@@ -490,7 +583,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
         />
       </div>
       <button
-        onClick={() => saveContentData()}
+        onClick={() => saveContentData(contentData)}
         className="bg-amber-600 text-white px-4 py-2 rounded-md hover:bg-amber-700 flex items-center space-x-2"
       >
         <Save className="w-4 h-4" />
@@ -591,7 +684,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
         </div>
 
         <button
-          onClick={() => saveContentData()}
+          onClick={() => saveContentData(contentData)}
           className="bg-amber-600 text-white px-4 py-2 rounded-md hover:bg-amber-700 flex items-center space-x-2"
         >
           <Save className="w-4 h-4" />
@@ -628,10 +721,31 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
     const updateAlbum = (updatedAlbum: any) => {
       setContentData({
         ...contentData,
-        gallery: contentData.gallery.map(album => 
-          album.id === updatedAlbum.id ? updatedAlbum : album
+        gallery: contentData.gallery.map(
+          album => album.id === updatedAlbum.id ? updatedAlbum : album
         )
       });
+    };
+
+    const saveAlbum = () => {
+      //clone the existing contentData and update changedAlbum in it
+      var updatedData = structuredClone(contentData);
+      for (var i = 0; i < updatedData.gallery.length; i++) {
+        if (updatedData.gallery[i].id === editingAlbum.id) {
+          updatedData.gallery[i] = editingAlbum;
+          break;
+        }
+      }
+
+      updateAlbum(editingAlbum);    //update contentData
+      setEditingAlbum(null);        //reset editingAlbum
+
+      // Save updated data to json file by calling api. Though
+      // contentData is updated it will not be reflected until next
+      // render, so we have created cloned object and updated it
+      // with latest change and use it to save the changes to json
+      // file.
+      saveContentData(updatedData);
     };
 
     return (
@@ -719,16 +833,131 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Photos (comma-separated filenames)</label>
-                  <input
-                    type="text"
-                    value={editingAlbum.photos.join(', ')}
-                    onChange={(e) => setEditingAlbum({ 
-                      ...editingAlbum, 
-                      photos: e.target.value.split(',').map(p => p.trim()).filter(p => p) 
-                    })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                    placeholder="photo1.jpg, photo2.jpg, photo3.jpg"
-                  />
+                  <div className="space-y-4">
+                    {/* File Upload */}
+                    <div>
+                      <input
+                        type="file"
+                        multiple
+                        accept="image/*"
+                        onChange={(e) => setSelectedFiles(e.target.files)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      />
+                      <p className="text-sm text-gray-500 mt-1">Select multiple images to upload (max 5MB each)</p>
+                      {selectedFiles && selectedFiles.length > 0 && (
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            const uploadedFiles = await handleImageUpload(editingAlbum.id, selectedFiles);
+                            if (uploadedFiles.length > 0) {
+                              setEditingAlbum({
+                                ...editingAlbum,
+                                photos: [...editingAlbum.photos, ...uploadedFiles]
+                              });
+                              setSelectedFiles(null);
+                              // Reset the file input
+                              const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+                              if (fileInput) fileInput.value = '';
+                            }
+                          }}
+                          disabled={uploadingImages}
+                          className="mt-2 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 disabled:opacity-50"
+                        >
+                          {uploadingImages ? 'Uploading...' : `Upload ${selectedFiles.length} image(s)`}
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Current Images */}
+                    {editingAlbum.photos.length > 0 && (
+                      <div>
+                        <h6 className="font-medium mb-2">Current Images ({editingAlbum.photos.length})</h6>
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-h-60 overflow-y-auto">
+                          {editingAlbum.photos.map((photo: string, index: number) => (
+                            <div key={index} className="relative group">
+                              <div className="aspect-square bg-gray-200 rounded-lg overflow-hidden">
+                                <img
+                                  src={`/data/uploads/gallery/${photo}`}
+                                  alt={`Album photo ${index + 1}`}
+                                  className="w-full h-full object-cover"
+                                  onError={(e) => {
+                                    // Fallback for images that don't exist
+                                    (e.target as HTMLImageElement).src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtc2l6ZT0iMTgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIiBmaWxsPSIjOTk5Ij5JbWFnZTwvdGV4dD48L3N2Zz4=';
+                                  }}
+                                />
+                              </div>
+                              <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center space-x-2">
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const newPhotos = [...editingAlbum.photos];
+                                    if (index > 0) {
+                                      [newPhotos[index], newPhotos[index - 1]] = [newPhotos[index - 1], newPhotos[index]];
+                                      setEditingAlbum({ ...editingAlbum, photos: newPhotos });
+                                    }
+                                  }}
+                                  disabled={index === 0}
+                                  className="bg-blue-600 text-white p-1 rounded text-xs disabled:opacity-50"
+                                  title="Move up"
+                                >
+                                  ↑
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const newPhotos = [...editingAlbum.photos];
+                                    if (index < newPhotos.length - 1) {
+                                      [newPhotos[index], newPhotos[index + 1]] = [newPhotos[index + 1], newPhotos[index]];
+                                      setEditingAlbum({ ...editingAlbum, photos: newPhotos });
+                                    }
+                                  }}
+                                  disabled={index === editingAlbum.photos.length - 1}
+                                  className="bg-blue-600 text-white p-1 rounded text-xs disabled:opacity-50"
+                                  title="Move down"
+                                >
+                                  ↓
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={async () => {
+                                    if (confirm('Are you sure you want to delete this image?')) {
+                                      await handleDeleteImage(photo);
+                                      setEditingAlbum({
+                                        ...editingAlbum,
+                                        photos: editingAlbum.photos.filter((_: string, i: number) => i !== index)
+                                      });
+                                    }
+                                  }}
+                                  className="bg-red-600 text-white p-1 rounded text-xs"
+                                  title="Delete"
+                                >
+                                  ×
+                                </button>
+                              </div>
+                              <div className="absolute bottom-1 left-1 bg-black bg-opacity-75 text-white text-xs px-1 rounded">
+                                {index + 1}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Manual filename input (fallback) */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Or add filenames manually</label>
+                      <input
+                        type="text"
+                        value={editingAlbum.photos.join(', ')}
+                        onChange={(e) => setEditingAlbum({ 
+                          ...editingAlbum, 
+                          photos: e.target.value.split(',').map((p: string) => p.trim()).filter((p: string) => p) 
+                        })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                        placeholder="photo1.jpg, photo2.jpg, photo3.jpg"
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -741,9 +970,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                 </button>
                 <button
                   onClick={() => {
-                    updateAlbum(editingAlbum);
-                    setEditingAlbum(null);
-                    saveContentData();
+                    saveAlbum();
                   }}
                   className="bg-amber-600 text-white px-4 py-2 rounded-md hover:bg-amber-700"
                 >
@@ -788,7 +1015,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
         };
 
         // Update admin data via API
-        const response = await fetch('http://localhost:3001/api/update-admin', {
+        const response = await fetch(apiServer + 'update-admin', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -928,7 +1155,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
         </div>
       </div>
       <button
-        onClick={() => saveContentData()}
+        onClick={() => saveContentData(contentData)}
         className="bg-amber-600 text-white px-4 py-2 rounded-md hover:bg-amber-700 flex items-center space-x-2"
       >
         <Save className="w-4 h-4" />

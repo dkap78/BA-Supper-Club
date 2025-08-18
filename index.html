@@ -12,6 +12,12 @@
         .then(res => res.json())
         .then(cfg => {
           window.__BASE_PATH__ = cfg.basePath || '/';
+
+          const apiServer = document.createElement('meta');
+          apiServer.name = "apiServer";
+          apiServer.content = cfg.apiServer || 'http://localhost:3001/';
+          document.head.appendChild(apiServer);
+
           const script = document.createElement('script');
           script.src = window.__BASE_PATH__ + 'assets/index.js'; // Adjust if using hash
           document.body.appendChild(script);

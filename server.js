@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 3001;
 // Configure multer for file uploads
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, 'public', 'uploads', 'gallery'));
+    cb(null, path.join(__dirname, 'data', 'uploads', 'gallery'));
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
@@ -39,7 +39,7 @@ const upload = multer({
 
 // Create uploads directory if it doesn't exist
 const createUploadsDir = async () => {
-  const uploadsDir = path.join(__dirname, 'public', 'uploads', 'gallery');
+  const uploadsDir = path.join(__dirname, 'data', 'uploads', 'gallery');
   try {
     await fs.access(uploadsDir);
   } catch {
@@ -71,7 +71,7 @@ const createEmailTransporter = () => {
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
+app.use('/uploads', express.static(path.join(__dirname, 'data', 'uploads')));
 
 // Initialize uploads directory
 createUploadsDir();
@@ -242,7 +242,7 @@ app.post('/api/upload-gallery-images', upload.array('images', 10), async (req, r
 app.delete('/api/delete-gallery-image/:filename', async (req, res) => {
   try {
     const { filename } = req.params;
-    const filePath = path.join(__dirname, 'public', 'uploads', 'gallery', filename);
+    const filePath = path.join(__dirname, 'data', 'uploads', 'gallery', filename);
     
     await fs.unlink(filePath);
     
