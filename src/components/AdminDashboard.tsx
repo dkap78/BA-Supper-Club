@@ -17,6 +17,11 @@ import {
   Lock
 } from 'lucide-react';
 
+interface ConfigData {
+  basePath: string,
+  apiServer: string
+}
+
 interface ContentData {
   home: {
     summary: string;
@@ -92,6 +97,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
   const [uploadingImages, setUploadingImages] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null);
 
+  // Config data
+  const [configData, setConfigData] = useState<ConfigData | null>(null);
+
   // Password tab state
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -102,7 +110,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
   const [apiServer, setApiServer] = useState('http://localhost:3001/api/');
 
   useEffect(() => {
-    loadData();
+    loadConfigData();
   }, []);
 
   const init = async() => {
@@ -116,20 +124,32 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
         }
       }
 
-      loadData();
+      loadConfigData();
     } catch (error) {
       console.error("Error initializing server:", error);
     } finally {
     }
   };
 
-  const loadData = async () => {
+  const loadConfigData = async() => {
     try {
-      const contentResponse = await fetch('/data/content.json');
+      const response = await fetch('config.json');
+      const data = await response.json();
+      setConfigData(data);
+
+      loadData(data.basePath);
+    } catch (error) {
+      console.error('Error loading config:', error);
+    }
+  };
+
+  const loadData = async (basePath: string) => {
+    try {
+      const contentResponse = await fetch(`${basePath}data/content.json`);
       const content = await contentResponse.json();
       setContentData(content);
 
-      const feedbackResponse = await fetch('/data/feedbacks.json');
+      const feedbackResponse = await fetch(`${basePath}data/feedbacks.json`);
       const feedbackData = await feedbackResponse.json();
       setFeedbacks(feedbackData);
     } catch (error) {
@@ -142,7 +162,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
   const saveContentData = async (data: any, showReloadMessage: boolean = false) => {
     try {
       // Update content data via API
-      const contentResponse = await fetch(apiServer + 'update-content', {
+      const contentResponse = await fetch(configData?.apiServer + 'update-content', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -151,7 +171,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
       });
 
       // Update feedback data via API
-      const feedbackResponse = await fetch(apiServer + 'update-feedbacks', {
+      const feedbackResponse = await fetch(configData?.apiServer + 'update-feedbacks', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -184,7 +204,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
     }
 
     try {
-      const response = await fetch(apiServer + 'upload-gallery-images', {
+      const response = await fetch(configData?.apiServer + 'upload-gallery-images', {
         method: 'POST',
         body: formData,
       });
@@ -207,7 +227,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
 
   const handleDeleteImage = async (filename: string) => {
     try {
-      const response = await fetch(`${apiServer}delete-gallery-image/${filename}`, {
+      const response = await fetch(`${configData?.apiServer}delete-gallery-image/${filename}`, {
         method: 'DELETE',
       });
 
@@ -877,7 +897,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                             <div key={index} className="relative group">
                               <div className="aspect-square bg-gray-200 rounded-lg overflow-hidden">
                                 <img
-                                  src={`/data/uploads/gallery/${photo}`}
+                                  src={`${configData?.basePath}data/uploads/gallery/${photo}`}
                                   alt={`Album photo ${index + 1}`}
                                   className="w-full h-full object-cover"
                                   onError={(e) => {
@@ -1015,7 +1035,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
         };
 
         // Update admin data via API
-        const response = await fetch(apiServer + 'update-admin', {
+        const response = await fetch(configData?.apiServer + 'update-admin', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

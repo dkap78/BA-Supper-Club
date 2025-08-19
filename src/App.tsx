@@ -25,6 +25,11 @@ import {
 } from 'lucide-react';
 import AdminDashboard from './components/AdminDashboard';
 
+interface ConfigData {
+  basePath: string,
+  apiServer: string
+}
+
 interface ContentData {
   home: {
     summary: string;
@@ -77,6 +82,7 @@ function App() {
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
   const [adminPassword, setAdminPassword] = useState('');
   const [adminError, setAdminError] = useState('');
+  const [configData, setConfigData] = useState<ConfigData | null>(null);
   const [contentData, setContentData] = useState<ContentData | null>(null);
   const [pemphletData, setPemphletData] = useState('');
   const [selectedAlbum, setSelectedAlbum] = useState<any>(null);
@@ -90,8 +96,7 @@ function App() {
   });
 
   useEffect(() => {
-    loadContentData();
-    loadPemphletData();
+    loadConfigData();
     
     // Check if admin route is accessed
     const currentPath = window.location.pathname;
@@ -102,9 +107,22 @@ function App() {
     }
   }, []);
 
-  const loadContentData = async () => {
+  const loadConfigData = async() => {
     try {
-      const response = await fetch('/data/content.json');
+      const response = await fetch('config.json');
+      const data = await response.json();
+      setConfigData(data);
+
+      loadContentData(data.basePath);
+      loadPemphletData(data.basePath);
+    } catch (error) {
+      console.error('Error loading config:', error);
+    }
+  };
+
+  const loadContentData = async (basePath: string) => {
+    try {
+      const response = await fetch(`${basePath}data/content.json`);
       const data = await response.json();
       setContentData(data);
     } catch (error) {
@@ -112,9 +130,9 @@ function App() {
     }
   };
 
-  const loadPemphletData = async () => {
+  const loadPemphletData = async (basePath: string) => {
     try {
-      const response = await fetch('/data/whatsapp-pamphlet.html');
+      const response = await fetch(`${basePath}data/whatsapp-pamphlet.html`);
       const data = await response.text();
       setPemphletData(data);
     } catch (error) {
@@ -127,7 +145,7 @@ function App() {
     setAdminError('');
     
     try {
-      const response = await fetch('/data/admin.json');
+      const response = await fetch(`${configData?.basePath}data/admin.json`);
       const adminData = await response.json();
       
       // Simple bcrypt-like comparison (in production, use proper bcrypt)
