@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { 
@@ -23,6 +22,7 @@ import {
   Lock,
   Soup
 } from 'lucide-react';
+import html2pdf from 'html2pdf.js';
 import AdminDashboard from './components/AdminDashboard';
 
 interface ConfigData {
@@ -301,6 +301,7 @@ function App() {
       htmlText = htmlText.replaceAll("{{event_reservation_ph_number}}", contentData.reservation.phoneNumber);
       htmlText = htmlText.replaceAll("{{event_reservation_cont_person}}", contentData.reservation.contactPerson);
 
+      //// Create Html File
       const blob = new Blob([htmlText], { type: 'text/html' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -308,6 +309,23 @@ function App() {
       a.download = `bas-supper-club-${latestMenu.date}.html`;
       a.click();
       URL.revokeObjectURL(url);
+      
+      //// Create PDF File
+      /*
+      // Create a temporary container      
+      const temp = document.createElement('div');
+      temp.innerHTML = htmlText;
+
+      const options = {
+        margin: 0.5,
+        filename: `bas-supper-club-${latestMenu.date}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+      };
+
+      html2pdf().set(options).from(temp).save();
+      */
     }
   };
 
