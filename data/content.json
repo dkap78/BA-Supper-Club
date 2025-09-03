@@ -33,7 +33,7 @@
       "id": "menu-1754139000249",
       "date": "2025-08-02",
       "title": "3-Course Mexican Menu (Public)",
-      "pricePerPerson": 1300,
+      "pricePerPerson": 1200,
       "maxPersons": 8,
       "childrenAllowed": false,
       "categories": {
@@ -88,6 +88,38 @@
         "desserts": [
           {
             "name": "Tiramisu",
+            "description": "Espresso-soaked ladyfingers layered with mascarpone cream and cocoa—a light, dreamy Italian classic."
+          }
+        ]
+      }
+    },
+    {
+      "id": "menu-1756793518415",
+      "date": "2025-09-12",
+      "title": "Ba's Italian Menu",
+      "pricePerPerson": 1200,
+      "maxPersons": 8,
+      "childrenAllowed": false,
+      "categories": {
+        "starter": [
+          {
+            "name": "Antipasto: Sautéed Exotic Vegetables in Olive Oil",
+            "description": "A vibrant medley of seasonal vegetables, lightly sautéed with garlic and herbs in olive oil—crisp, healthy, and full of flavor."
+          }
+        ],
+        "mainCourse": [
+          {
+            "name": "Primo Piatto: Baked Spinach with Spaghetti",
+            "description": "Spaghetti with spinach, garlic, and herbs, baked under a golden cheese crust—a warm, creamy, and comforting dish."
+          },
+          {
+            "name": "Garlic Bread",
+            "description": " Buttery, herb-sprinkled garlic bread—crispy outside, soft inside, made with Ba's special touch."
+          }
+        ],
+        "desserts": [
+          {
+            "name": "Dolce: Tiramisu",
             "description": "Espresso-soaked ladyfingers layered with mascarpone cream and cocoa—a light, dreamy Italian classic."
           }
         ]
