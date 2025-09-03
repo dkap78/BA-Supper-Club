@@ -89,6 +89,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
   // Menu tab state
   const [editingMenu, setEditingMenu] = useState<any>(null);
   const [newItem, setNewItem] = useState({ name: '', description: '', category: 'mainCourse' });
+  const [editingItem, setEditingItem] = useState<{ item: any; category: string; index: number } | null>(null);
 
   // Gallery tab state
   const [editingAlbum, setEditingAlbum] = useState<any>(null);
@@ -137,19 +138,21 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
       const data = await response.json();
       setConfigData(data);
 
-      loadData(data.basePath);
+      loadData(data);
     } catch (error) {
       console.error('Error loading config:', error);
     }
   };
 
-  const loadData = async (basePath: string) => {
+  const loadData = async (data: any) => {
     try {
-      const contentResponse = await fetch(`${basePath}data/content.json`);
+      //const contentResponse = await fetch(`${basePath}data/content.json`);
+      const contentResponse = await fetch(`${data?.apiServer}get-content`);
       const content = await contentResponse.json();
       setContentData(content);
 
-      const feedbackResponse = await fetch(`${basePath}data/feedbacks.json`);
+      //const feedbackResponse = await fetch(`${basePath}data/feedbacks.json`);
+      const feedbackResponse = await fetch(`${data?.apiServer}get-feedbacks`);
       const feedbackData = await feedbackResponse.json();
       setFeedbacks(feedbackData);
     } catch (error) {
@@ -327,14 +330,28 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
 
     const addMenuItem = () => {
       if (newItem.name && newItem.description && editingMenu) {
-        const updatedMenu = { ...editingMenu };
-        updatedMenu.categories[newItem.category as keyof typeof updatedMenu.categories].push({
-          name: newItem.name,
-          description: newItem.description
-        });
-        updateMenu(updatedMenu);
-        setEditingMenu(updatedMenu);
-        setNewItem({ name: '', description: '', category: 'mainCourse' });
+        if (editingItem) {
+          // Update existing item
+          const updatedMenu = { ...editingMenu };
+          updatedMenu.categories[editingItem.category as keyof typeof updatedMenu.categories][editingItem.index] = {
+            name: newItem.name,
+            description: newItem.description
+          };
+          updateMenu(updatedMenu);
+          setEditingMenu(updatedMenu);
+          setNewItem({ name: '', description: '', category: 'mainCourse' });
+          setEditingItem(null);
+        } else {
+          // Add new item
+          const updatedMenu = { ...editingMenu };
+          updatedMenu.categories[newItem.category as keyof typeof updatedMenu.categories].push({
+            name: newItem.name,
+            description: newItem.description
+          });
+          updateMenu(updatedMenu);
+          setEditingMenu(updatedMenu);
+          setNewItem({ name: '', description: '', category: 'mainCourse' });
+        }
       }
     };
 
@@ -366,9 +383,29 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
         updatedMenu.categories[category as keyof typeof updatedMenu.categories].splice(index, 1);
         updateMenu(updatedMenu);
         setEditingMenu(updatedMenu);
+        // Reset editing state if we're deleting the item being edited
+        if (editingItem && editingItem.category === category && editingItem.index === index) {
+          setEditingItem(null);
+          setNewItem({ name: '', description: '', category: 'mainCourse' });
+        }
       }
     };
 
+    // Function to edit a menu item
+    const editMenuItem = (category: string, index: number, item: any) => {
+      setEditingItem({ item, category, index });
+      setNewItem({
+        name: item.name,
+        description: item.description,
+        category: category
+      });
+    };
+
+    // Function to cancel editing
+    const cancelEdit = () => {
+      setEditingItem(null);
+      setNewItem({ name: '', description: '', category: 'mainCourse' });
+    };
     return (
       <div className="space-y-6">
         <div className="flex justify-between items-center">
@@ -475,7 +512,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
               </div>
 
               <div className="mb-6">
-                <h5 className="font-semibold mb-2">Add New Item</h5>
+                <h5 className="font-semibold mb-2">{editingItem ? 'Edit Item' : 'Add New Item'}</h5>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                   <input
                     type="text"
@@ -495,34 +532,59 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                     value={newItem.category}
                     onChange={(e) => setNewItem({ ...newItem, category: e.target.value })}
                     className="px-3 py-2 border border-gray-300 rounded-md"
+                    disabled={editingItem !== null}
                   >
                     <option value="starter">Starter</option>
                     <option value="mainCourse">Main Course</option>
                     <option value="desserts">Desserts</option>
                   </select>
                 </div>
-                <button
-                  onClick={addMenuItem}
-                  className="mt-2 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
-                >
-                  Add Item
-                </button>
+                <div className="mt-2 flex space-x-2">
+                  <button
+                    onClick={addMenuItem}
+                    className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+                  >
+                    {editingItem ? 'Update Item' : 'Add Item'}
+                  </button>
+                  {editingItem && (
+                    <button
+                      onClick={cancelEdit}
+                      className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600"
+                    >
+                      Cancel
+                    </button>
+                  )}
+                </div>
               </div>
 
               <div className="space-y-4">
                 {Array.isArray(editingMenu.categories.starter) && editingMenu.categories.starter.length > 0 && (<div>
                   <h6 className="font-medium">Starter ({editingMenu.categories.starter.length})</h6>
                   {editingMenu.categories.starter.map((item: any, index: number) => (
-                    <div key={index} className="bg-gray-50 p-2 rounded mt-1 flex justify-between items-center">
+                    <div key={index} className={`p-2 rounded mt-1 flex justify-between items-center ${
+                      editingItem && editingItem.category === 'starter' && editingItem.index === index 
+                        ? 'bg-blue-100 border border-blue-300' 
+                        : 'bg-gray-50'
+                    }`}>
                       <div>
                         <strong>{item.name}</strong>: {item.description}
                       </div>
-                      <button
-                        onClick={() => deleteMenuItem('starter', index)}
-                        className="text-red-600 hover:text-red-800"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+                      <div className="flex space-x-1">
+                        <button
+                          onClick={() => editMenuItem('starter', index, item)}
+                          className="text-blue-600 hover:text-blue-800 p-1"
+                          title="Edit item"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => deleteMenuItem('starter', index)}
+                          className="text-red-600 hover:text-red-800 p-1"
+                          title="Delete item"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>)}
@@ -530,16 +592,30 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                 {Array.isArray(editingMenu.categories.mainCourse) && editingMenu.categories.mainCourse.length > 0 && (<div>
                   <h6 className="font-medium">Main Course ({editingMenu.categories.mainCourse.length})</h6>
                   {editingMenu.categories.mainCourse.map((item: any, index: number) => (
-                    <div key={index} className="bg-gray-50 p-2 rounded mt-1 flex justify-between items-center">
+                    <div key={index} className={`p-2 rounded mt-1 flex justify-between items-center ${
+                      editingItem && editingItem.category === 'mainCourse' && editingItem.index === index 
+                        ? 'bg-blue-100 border border-blue-300' 
+                        : 'bg-gray-50'
+                    }`}>
                       <div>
                         <strong>{item.name}</strong>: {item.description}
                       </div>
-                      <button
-                        onClick={() => deleteMenuItem('mainCourse', index)}
-                        className="text-red-600 hover:text-red-800"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+                      <div className="flex space-x-1">
+                        <button
+                          onClick={() => editMenuItem('mainCourse', index, item)}
+                          className="text-blue-600 hover:text-blue-800 p-1"
+                          title="Edit item"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => deleteMenuItem('mainCourse', index)}
+                          className="text-red-600 hover:text-red-800 p-1"
+                          title="Delete item"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>)}
@@ -547,16 +623,30 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                 {Array.isArray(editingMenu.categories.desserts) && editingMenu.categories.desserts.length > 0 && (<div>
                   <h6 className="font-medium">Desserts ({editingMenu.categories.desserts.length})</h6>
                   {editingMenu.categories.desserts.map((item: any, index: number) => (
-                    <div key={index} className="bg-gray-50 p-2 rounded mt-1 flex justify-between items-center">
+                    <div key={index} className={`p-2 rounded mt-1 flex justify-between items-center ${
+                      editingItem && editingItem.category === 'desserts' && editingItem.index === index 
+                        ? 'bg-blue-100 border border-blue-300' 
+                        : 'bg-gray-50'
+                    }`}>
                       <div>
                         <strong>{item.name}</strong>: {item.description}
                       </div>
-                      <button
-                        onClick={() => deleteMenuItem('desserts', index)}
-                        className="text-red-600 hover:text-red-800"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+                      <div className="flex space-x-1">
+                        <button
+                          onClick={() => editMenuItem('desserts', index, item)}
+                          className="text-blue-600 hover:text-blue-800 p-1"
+                          title="Edit item"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => deleteMenuItem('desserts', index)}
+                          className="text-red-600 hover:text-red-800 p-1"
+                          title="Delete item"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>)}
@@ -564,7 +654,11 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
 
               <div className="flex justify-end space-x-2 mt-6">
                 <button
-                  onClick={() => setEditingMenu(null)}
+                  onClick={() => {
+                    setEditingMenu(null);
+                    setEditingItem(null);
+                    setNewItem({ name: '', description: '', category: 'mainCourse' });
+                  }}
                   className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
                 >
                   Cancel
