@@ -391,10 +391,11 @@
                 </svg>
             </div>
             <h1 class="title">Ba's Supper Club</h1>
-            <p class="subtitle">{{event_title}}</p>
+            <p class="subtitle">{{event_title}} - {{event_meal_type}}</p>
             
             <div class="event-badge">
                 <div class="event-date">🗓️ {{event_date}}</div>
+                <div class="event-time" style="font-size: 0.9rem; margin-bottom: 0.5rem;">🕐 {{event_timing}}</div>
                 <div class="event-price">₹{{event_price}}</div>
                 <div>Complete Taste Journey</div>
             </div>
@@ -484,12 +485,12 @@
             
             <div class="info-grid">
                 <div class="info-item">
-                    <div class="info-label">Age Limit</div>
-                    <div class="info-value">12+ Only</div>
+                    <div class="info-label">Meal Type</div>
+                    <div class="info-value">{{event_meal_type}}</div>
                 </div>
                 <div class="info-item">
-                    <div class="info-label">Booking</div>
-                    <div class="info-value">Advance Required</div>
+                    <div class="info-label">Timing</div>
+                    <div class="info-value">{{event_timing}}</div>
                 </div>
                 <div class="info-item">
                     <div class="info-label">Cancellation</div>

@@ -296,6 +296,12 @@ function App() {
       htmlText = htmlText.replaceAll("{{event_title}}", latestMenu.title);
       htmlText = htmlText.replaceAll("{{event_date}}", formatDate(latestMenu.date));
       htmlText = htmlText.replaceAll("{{event_price}}", latestMenu.pricePerPerson.toString());
+      htmlText = htmlText.replaceAll("{{event_meal_type}}", getMealTypeDisplay(latestMenu.mealType || 'dinner'));
+      htmlText = htmlText.replaceAll("{{event_timing}}", 
+        latestMenu.startTime && latestMenu.endTime 
+          ? `${formatTime(latestMenu.startTime)} - ${formatTime(latestMenu.endTime)}`
+          : 'Evening service'
+      );
       htmlText = htmlText.replaceAll("{{event_menu_items}}", menuItems);
       htmlText = htmlText.replaceAll("{{event_max_guests}}", latestMenu.maxPersons.toString());
       htmlText = htmlText.replaceAll("{{event_reservation_ph_number}}", contentData.reservation.phoneNumber);
