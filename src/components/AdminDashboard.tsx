@@ -1,21 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Save, 
-  Plus, 
-  Trash2, 
-  Edit, 
-  Eye, 
-  EyeOff, 
-  Calendar,
-  Users,
-  Mail,
-  Phone,
-  Image,
-  X,
-  ChevronLeft,
-  ChevronRight,
-  Lock
-} from 'lucide-react';
+import { Save, Plus, Trash2, CreditCard as Edit, Eye, EyeOff, Calendar, Users, Mail, Phone, Image, X, ChevronLeft, ChevronRight, Lock } from 'lucide-react';
 
 interface ConfigData {
   basePath: string,
@@ -295,12 +279,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
       const newMenu = {
         id: `menu-${Date.now()}`,
         date: new Date().toISOString().split('T')[0],
-        title: '',
-        pricePerPerson: 1200,
+        title: 'New Menu',
+        pricePerPerson: 1000,
         maxPersons: 8,
-        mealType: 'dinner',
-        startTime: '',
-        endTime: '',
         childrenAllowed: false,
         categories: {
           starter: [],
@@ -422,60 +403,32 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
           </button>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Meal Type</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Timing</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Max Guests</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {contentData.menus.map((menu) => (
-                <tr key={menu.id}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {menu.title}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {format(new Date(menu.date), 'dd-MMM-yyyy')}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 capitalize">
-                    {menu.mealType || 'dinner'}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {menu.startTime && menu.endTime ? `${menu.startTime} - ${menu.endTime}` : 'Not set'}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    ₹{menu.pricePerPerson}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {menu.maxPersons}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <div className="flex space-x-2">
-                      <button
-                        onClick={() => setEditingMenu(menu)}
-                        className="text-indigo-600 hover:text-indigo-900"
-                      >
-                        <Edit className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => deleteMenu(menu.id)}
-                        className="text-red-600 hover:text-red-900"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="grid grid-cols-1 gap-4">
+          {contentData.menus.map((menu) => (
+            <div key={menu.id} className="border border-gray-200 rounded-lg p-4">
+              <div className="flex justify-between items-start">
+                <div>
+                  <h4 className="font-semibold">{menu.title}</h4>
+                  <p className="text-gray-600">Date: {menu.date}</p>
+                  <p className="text-gray-600">Price: ₹{menu.pricePerPerson} per person</p>
+                </div>
+                <div className="flex space-x-2">
+                  <button
+                    onClick={() => setEditingMenu(menu)}
+                    className="text-blue-600 hover:text-blue-800"
+                  >
+                    <Edit className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => deleteMenu(menu.id)}
+                    className="text-red-600 hover:text-red-800"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
 
         {editingMenu && (
@@ -525,54 +478,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                     type="number"
                     value={editingMenu.maxPersons}
                     onChange={(e) => setEditingMenu({ ...editingMenu, maxPersons: parseInt(e.target.value) })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
-                    min="1"
-                    max="20"
-                    required
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
                   />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Meal Type
-                  </label>
-                  <select
-                    value={editingMenu.mealType || 'dinner'}
-                    onChange={(e) => setEditingMenu({ ...editingMenu, mealType: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
-                    required
-                  >
-                    <option value="breakfast">Breakfast</option>
-                    <option value="lunch">Lunch</option>
-                    <option value="dinner">Dinner</option>
-                  </select>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Start Time
-                    </label>
-                    <input
-                      type="time"
-                      value={editingMenu.startTime || ''}
-                      onChange={(e) => setEditingMenu({ ...editingMenu, startTime: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      End Time
-                    </label>
-                    <input
-                      type="time"
-                      value={editingMenu.endTime || ''}
-                      onChange={(e) => setEditingMenu({ ...editingMenu, endTime: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
-                      required
-                    />
-                  </div>
                 </div>
               </div>
 
