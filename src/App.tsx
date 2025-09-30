@@ -116,28 +116,29 @@ function App() {
       const data = await response.json();
       setConfigData(data);
 
-      loadContentData(data.basePath);
-      loadPemphletData(data.basePath);
+      loadContentData(data);
+      loadPemphletData(data);
     } catch (error) {
       console.error('Error loading config:', error);
     }
   };
 
-  const loadContentData = async (basePath: string) => {
+  const loadContentData = async (data: any) => {
     try {
-      const response = await fetch(`${basePath}data/content.json`);
-      const data = await response.json();
-      setContentData(data);
+      const response = await fetch(`${data?.apiServer}get-content`);
+      const content = await response.json();
+      setContentData(content);
+
     } catch (error) {
       console.error('Error loading content:', error);
     }
   };
 
-  const loadPemphletData = async (basePath: string) => {
+  const loadPemphletData = async (data: any) => {
     try {
-      const response = await fetch(`${basePath}data/whatsapp-pamphlet.html`);
-      const data = await response.text();
-      setPemphletData(data);
+      const response = await fetch(`${data?.apiServer}get-pamphlet`);
+      const content = await response.text();
+      setPemphletData(content);
     } catch (error) {
       console.error('Error loading pemphlet content:', error);
     }
