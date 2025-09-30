@@ -9,6 +9,9 @@
       "title": "Ba's Mexican Menu",
       "pricePerPerson": 1200,
       "maxPersons": 8,
+      "mealType": "dinner",
+      "startTime": "19:00",
+      "endTime": "22:00",
       "childrenAllowed": false,
       "categories": {
         "mainCourse": [
@@ -35,6 +38,9 @@
       "title": "3-Course Mexican Menu (Public)",
       "pricePerPerson": 1200,
       "maxPersons": 8,
+      "mealType": "dinner",
+      "startTime": "19:30",
+      "endTime": "22:30",
       "childrenAllowed": false,
       "categories": {
         "starter": [
@@ -67,6 +73,9 @@
       "title": "Ba's Italian Menu",
       "pricePerPerson": 1200,
       "maxPersons": 8,
+      "mealType": "dinner",
+      "startTime": "18:30",
+      "endTime": "21:30",
       "childrenAllowed": false,
       "categories": {
         "starter": [
@@ -99,6 +108,9 @@
       "title": "Ba's Italian Menu",
       "pricePerPerson": 1200,
       "maxPersons": 8,
+      "mealType": "dinner",
+      "startTime": "18:30",
+      "endTime": "21:30",
       "childrenAllowed": false,
       "categories": {
         "starter": [
