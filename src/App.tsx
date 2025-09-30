@@ -149,7 +149,7 @@ function App() {
     setAdminError('');
     
     try {
-      const response = await fetch(`${configData?.basePath}data/admin.json`);
+      const response = await fetch(`${configData?.apiServer}get-admin`);
       const adminData = await response.json();
       
       // Simple bcrypt-like comparison (in production, use proper bcrypt)
@@ -341,31 +341,31 @@ function App() {
 
   const displayedGalleryAlbums = galleryAlbums.slice(currentGalleryIndex, currentGalleryIndex + 4);
 
-const formatTime = (time24h: string) => {
-  // Ensure time24h is a string in "HH:MM" format
-  if (!time24h || !/^(?:2[0-3]|[01]?[0-9]):[0-5][0-9]$/.test(time24h)) {
-    return "Invalid Time Format";
-  }
-
-  const [hours, minutes] = time24h.split(':').map(Number);
-
-  let period = 'AM';
-  let hours12h = hours;
-
-  if (hours === 0) {
-    hours12h = 12; // 00:xx becomes 12:xx AM
-  } else if (hours >= 12) {
-    period = 'PM';
-    if (hours > 12) {
-      hours12h = hours - 12;
+  const formatTime = (time24h: string) => {
+    // Ensure time24h is a string in "HH:MM" format
+    if (!time24h || !/^(?:2[0-3]|[01]?[0-9]):[0-5][0-9]$/.test(time24h)) {
+      return "Invalid Time Format";
     }
+
+    const [hours, minutes] = time24h.split(':').map(Number);
+
+    let period = 'AM';
+    let hours12h = hours;
+
+    if (hours === 0) {
+      hours12h = 12; // 00:xx becomes 12:xx AM
+    } else if (hours >= 12) {
+      period = 'PM';
+      if (hours > 12) {
+        hours12h = hours - 12;
+      }
+    }
+
+    // Pad minutes with a leading zero if less than 10
+    const formattedMinutes = minutes.toString().padStart(2, '0');
+
+    return `${hours12h}:${formattedMinutes} ${period}`;
   }
-
-  // Pad minutes with a leading zero if less than 10
-  const formattedMinutes = minutes.toString().padStart(2, '0');
-
-  return `${hours12h}:${formattedMinutes} ${period}`;
-}
 
   const getMealTypeDisplay = (text: string) => {
     var txt = "";

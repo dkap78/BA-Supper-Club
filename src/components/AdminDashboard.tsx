@@ -261,6 +261,25 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
     );
   }
 
+  const getMealTypeDisplay = (text: string) => {
+    var txt = "";
+
+    txt = capitalizeEachWord(text) || "";
+
+    return txt;
+  }
+
+  const capitalizeEachWord = (text: string) => {
+    if (!text) return null;
+
+    const capitalizedWords = text
+      .split(' ') // Split the string into an array of words
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize each word
+      .join(' '); // Join the words back into a string
+    
+    return capitalizedWords;
+  }
+
   const renderHomeTab = () => (
     <div className="space-y-6">
       <h3 className="text-xl font-semibold text-gray-900">Home Content</h3>
@@ -434,7 +453,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
               <div className="flex justify-between items-start">
                 <div>
                   <h4 className="font-semibold">{menu.title}</h4>
-                  <p className="text-gray-600">Date: {menu.date}&nbsp;&nbsp;&nbsp;{menu.startTime && menu.endTime ? `${menu.startTime} - ${menu.endTime}` : 'Not set'}</p>
+                  <p className="text-gray-600">Meal Type: {getMealTypeDisplay(menu.mealType ?? "dinner")} </p>
+                  <p className="text-gray-600">Date: {formatDate(menu.date)}&nbsp;&nbsp;&nbsp;{menu.startTime && menu.endTime ? `${menu.startTime} - ${menu.endTime}` : 'Not set'}</p>
                   <p className="text-gray-600">Price: ₹{menu.pricePerPerson} per person</p>
                 </div>
                 <div className="flex space-x-2">
