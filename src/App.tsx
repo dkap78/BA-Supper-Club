@@ -36,7 +36,10 @@ interface ContentData {
   };
   menus: Array<{
     id: string;
+    mealType: string,
     date: string;
+    startTime: string,
+    endTime: string,
     title: string;
     pricePerPerson: number;
     maxPersons: number;
@@ -296,6 +299,12 @@ function App() {
       htmlText = htmlText.replaceAll("{{event_title}}", latestMenu.title);
       htmlText = htmlText.replaceAll("{{event_date}}", formatDate(latestMenu.date));
       htmlText = htmlText.replaceAll("{{event_price}}", latestMenu.pricePerPerson.toString());
+      htmlText = htmlText.replaceAll("{{event_meal_type}}", getMealTypeDisplay(latestMenu.mealType || 'dinner'));
+      htmlText = htmlText.replaceAll("{{event_timing}}", 
+        latestMenu.startTime && latestMenu.endTime 
+          ? `${formatTime(latestMenu.startTime)} - ${formatTime(latestMenu.endTime)}`
+          : 'Evening service'
+      );
       htmlText = htmlText.replaceAll("{{event_menu_items}}", menuItems);
       htmlText = htmlText.replaceAll("{{event_max_guests}}", latestMenu.maxPersons.toString());
       htmlText = htmlText.replaceAll("{{event_reservation_ph_number}}", contentData.reservation.phoneNumber);
@@ -330,6 +339,51 @@ function App() {
   };
 
   const displayedGalleryAlbums = galleryAlbums.slice(currentGalleryIndex, currentGalleryIndex + 4);
+
+const formatTime = (time24h: string) => {
+  // Ensure time24h is a string in "HH:MM" format
+  if (!time24h || !/^(?:2[0-3]|[01]?[0-9]):[0-5][0-9]$/.test(time24h)) {
+    return "Invalid Time Format";
+  }
+
+  const [hours, minutes] = time24h.split(':').map(Number);
+
+  let period = 'AM';
+  let hours12h = hours;
+
+  if (hours === 0) {
+    hours12h = 12; // 00:xx becomes 12:xx AM
+  } else if (hours >= 12) {
+    period = 'PM';
+    if (hours > 12) {
+      hours12h = hours - 12;
+    }
+  }
+
+  // Pad minutes with a leading zero if less than 10
+  const formattedMinutes = minutes.toString().padStart(2, '0');
+
+  return `${hours12h}:${formattedMinutes} ${period}`;
+}
+
+  const getMealTypeDisplay = (text: string) => {
+    var txt = "";
+
+    txt = capitalizeEachWord(text) || "";
+
+    return txt;
+  }
+
+  const capitalizeEachWord = (text: string) => {
+    if (!text) return null;
+
+    const capitalizedWords = text
+      .split(' ') // Split the string into an array of words
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize each word
+      .join(' '); // Join the words back into a string
+    
+    return capitalizedWords;
+  }
 
   return (
     <div className="min-h-screen bg-gray-900">

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { format } from 'date-fns';
 import { 
   Save, 
   Plus, 
@@ -14,7 +15,9 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
-  Lock
+  Lock,
+  CalendarDays,
+  CalendarClock
 } from 'lucide-react';
 
 interface ConfigData {
@@ -28,7 +31,10 @@ interface ContentData {
   };
   menus: Array<{
     id: string;
+    mealType: string,
     date: string;
+    startTime: string,
+    endTime: string,
     title: string;
     pricePerPerson: number;
     maxPersons: number;
@@ -295,9 +301,12 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
       const newMenu = {
         id: `menu-${Date.now()}`,
         date: new Date().toISOString().split('T')[0],
-        title: 'New Menu',
-        pricePerPerson: 1000,
+        title: '',
+        pricePerPerson: 1200,
         maxPersons: 8,
+        mealType: 'dinner',
+        startTime: '19:00',
+        endTime: '22:00',
         childrenAllowed: false,
         categories: {
           starter: [],
@@ -425,7 +434,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
               <div className="flex justify-between items-start">
                 <div>
                   <h4 className="font-semibold">{menu.title}</h4>
-                  <p className="text-gray-600">Date: {menu.date}</p>
+                  <p className="text-gray-600">Date: {menu.date}&nbsp;&nbsp;&nbsp;{menu.startTime && menu.endTime ? `${menu.startTime} - ${menu.endTime}` : 'Not set'}</p>
                   <p className="text-gray-600">Price: ₹{menu.pricePerPerson} per person</p>
                 </div>
                 <div className="flex space-x-2">
@@ -494,8 +503,54 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                     type="number"
                     value={editingMenu.maxPersons}
                     onChange={(e) => setEditingMenu({ ...editingMenu, maxPersons: parseInt(e.target.value) })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    min="1"
+                    max="20"
+                    required
                   />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Meal Type
+                  </label>
+                  <select
+                    value={editingMenu.mealType || 'dinner'}
+                    onChange={(e) => setEditingMenu({ ...editingMenu, mealType: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    required
+                  >
+                    <option value="breakfast">Breakfast</option>
+                    <option value="lunch">Lunch</option>
+                    <option value="dinner">Dinner</option>
+                  </select>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Start Time
+                    </label>
+                    <input
+                      type="time"
+                      value={editingMenu.startTime || ''}
+                      onChange={(e) => setEditingMenu({ ...editingMenu, startTime: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      End Time
+                    </label>
+                    <input
+                      type="time"
+                      value={editingMenu.endTime || ''}
+                      onChange={(e) => setEditingMenu({ ...editingMenu, endTime: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
+                      required
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -1277,6 +1332,16 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
       </button>
     </div>
   );
+
+  const formatDate = (date: string) => {
+    var formattedDate = format(new Date(date), 'EEE, dd-MMM-yyyy');
+
+    return formattedDate;
+  };
+
+  // Get latest menu
+  const sortedMenus = contentData.menus
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   const tabs = [
     { id: 'home', label: 'Home', icon: <Users className="w-4 h-4" /> },
