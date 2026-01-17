@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ba's Supper Club - {{event_date}}</title>
+    <title>Ba's Catering Menu</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         * {
@@ -19,8 +19,17 @@
             background: #f8f9fa;
         }
         
+		ul {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+			list-style-type: disc;
+			list-style-position: inside;
+			color: rgb(55, 65, 81);
+		}
+		
         .pamphlet {
-            max-width: 400px;
+            max-width: 800px;
             margin: 0 auto;
             background: white;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
@@ -82,7 +91,7 @@
             z-index: 1;
         }
         
-        .event-badge {
+        .cat-badge {
             background: rgba(255,255,255,0.2);
             backdrop-filter: blur(10px);
             border: 2px solid rgba(255,255,255,0.3);
@@ -91,17 +100,10 @@
             position: relative;
             z-index: 1;
         }
-        
-        .event-date {
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-        
-        .event-price {
-            font-size: 2rem;
-            font-weight: 700;
-            margin: 0.5rem 0;
+
+        .cat-description {
+            font-size: 1.15rem;
+            margin: 0.15rem 0;
         }
         
         .content {
@@ -122,27 +124,55 @@
             align-items: center;
             gap: 0.5rem;
         }
+
+		.menu-category-title {
+			font-size: 1.5rem;
+			font-weight: 600;
+			line-height: 1.75rem;
+			border-bottom: dotted 1px;
+			color: rgb(180, 83, 9);
+			background-color: #f59e0b17;
+			padding: 4px 8px;
+			margin: 10px 0px;
+			border-top-right-radius: 10px;
+			border-top-left-radius: 10px;
+		}
         
+		.menu-item-group {
+			margin-bottom: 2.5rem;
+		}
+		
         .menu-item {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border-left: 4px solid #f59e0b;
+			display: flex;
+			justify-content: space-between;
+			background: #f8f9fa;
+			border: dotted 1px #f59e0b;
+			border-left: solid 4px #f59e0b;
+			border-radius: 10px;
+			margin-bottom: 0.5rem;
+			padding-top: 0.5rem;
+			padding-bottom: 0.5rem;
+			padding-left: 1rem;
+			padding-right: 1rem;
         }
         
         .item-name {
-            font-weight: 600;
+            font-weight: 500;
             color: #1f2937;
-            margin-bottom: 0.5rem;
-            font-size: 1.1rem;
         }
-        
+        .item-qty,
         .item-description {
             color: #6b7280;
             font-size: 0.9rem;
-            line-height: 1.5;
         }
+		.item-qty {
+			margin-left: 8px;
+		}
+		.item-description {
+			line-height: 1.5;
+		}
+		.item-price {
+		}
         
         .highlight-box {
             background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
@@ -335,7 +365,7 @@
                 color: white !important;
             }
             
-            .event-badge {
+            .cat-badge {
                 background: rgba(255,255,255,0.2) !important;
                 border: 2px solid rgba(255,255,255,0.3) !important;
             }
@@ -390,19 +420,13 @@
                     <path d="M8.1 13.34l2.83-2.83L3.91 3.5c-1.56 1.56-1.56 4.09 0 5.66l4.19 4.18zm6.78-1.81c1.53.71 3.68.21 5.27-1.38 1.91-1.91 2.28-4.65.81-6.12-1.46-1.46-4.20-1.10-6.12.81-1.59 1.59-2.09 3.74-1.38 5.27L3.7 19.87l1.41 1.41L12 14.41l6.88 6.88 1.41-1.41L13.41 13l1.47-1.47z"/>
                 </svg>
             </div>
-            <h1 class="title">Ba's Supper Club</h1>
-            <p class="subtitle">{{event_title}}</p>
-            
-            <div class="event-badge">
-                <div class="event-date">🗓️ {{event_date}}</div>
-                <div class="event-price">₹{{event_price}}</div>
-                <div>Complete Taste Journey</div>
+            <h1 class="title">Ba's Catering</h1>
+			
+            <div class="cat-badge">
+				<div class="cat-description">{{cat_description}}</div>
             </div>
         </div>
-        
-        <!-- Page Break -->
-        <div class="page-break"></div>
-        
+
         <!-- Content -->
         <div class="content">
             <!-- Purpose Section -->
@@ -412,78 +436,44 @@
                 </h2>
                 <div style="background: #f8f9fa; border-radius: 10px; padding: 1.2rem; border-left: 4px solid #f59e0b; margin-bottom: 1rem;">
                     <p style="color: #374151; font-size: 0.9rem; line-height: 1.6; margin-bottom: 0.8rem;">
-                        The primary purpose of my supper club is to create a unique, intimate, and social dining experience, 
-                        centered around high-quality food and meaningful conversation.
-                    </p>
-                    <p style="color: #374151; font-size: 0.9rem; line-height: 1.6; margin-bottom: 0.8rem;">
-                        It aims to foster a sense of community and connection among guests, encouraging interaction and 
-                        engagement throughout the evening.
-                    </p>
-                    <p style="color: #374151; font-size: 0.9rem; line-height: 1.6; margin-bottom: 0.8rem;">
-                        The cozy setting and communal dining style offer a more relaxed and personal atmosphere than a 
-                        traditional restaurant, allowing for deeper connections with my guests.
+                        My primary goal is to create a unique, intimate, and high-quality food.
                     </p>
                     <p style="color: #374151; font-size: 0.9rem; line-height: 1.6;">
-                        Through this supper club, I also hope to share my culinary vision by presenting a variety of 
+                        Through this venture, I also hope to share my culinary vision by presenting a variety of 
                         cuisines and dishes that are rarely found in the restaurants of Jamnagar.
                     </p>
                 </div>
             </div>
-            
+
+			<!-- Page Break -->
+			<div class="page-break"></div>
+		
             <!-- Menu Section -->
             <div class="section">
                 <h2 class="section-title">
-                    🍽️ What's Included
+                    🍽️ Menu
                 </h2>
                 
-                {{event_menu_items}}
-            </div>
-            
-            <!-- Highlight Box -->
-            <div class="highlight-box">
-                <div class="highlight-title">🏠 Home-style Dining Experience</div>
-                <div class="highlight-text">Maximum {{event_max_guests}} guests • Intimate setting • Personal care by Ba</div>
-            </div>
-            
-            <!-- Warning -->
-            <div class="warning-box">
-                <div class="warning-title">
-                    ⚠️ Limited Seating!
-                </div>
-                <div class="warning-text">Only {{event_max_guests}} guests maximum. Book early to secure your spot for this exclusive Mexican dining experience.</div>
-            </div>
-            
-            <!-- Payment Info -->
-            <div class="payment-info">
-                <div class="payment-title">💳 Payment Methods</div>
-                <div class="payment-methods">
-                    <span class="payment-method">💵 Cash</span>
-                    <span class="payment-method">📱 Google Pay</span>
-                </div>
-                <div class="gpay-highlight">
-                    <div style="font-size: 0.9rem; color: #15803d; margin-bottom: 0.3rem;">Google Pay Number:</div>
-                    <div class="gpay-number">{{event_reservation_ph_number}}</div>
-                </div>
-                <div style="color: #1e40af; font-size: 0.9rem; margin-top: 0.5rem;">
-                    Advance payment required to secure reservation
-                </div>
+                {{cat_menu_items}}
             </div>
         </div>
-        
-        <!-- Page Break -->
-        <div class="page-break"></div>
-        
+
+		<!-- Page Break -->
+		<div class="page-break"></div>
+
+		<div class="content">
+			<!-- Notes -->
+            <div class="warning-box">
+                <div class="warning-title">
+                    ⚠️ Notes
+                </div>
+                <div class="warning-text">{{cat_notes}}</div>
+            </div>
+		</div>
+		
         <!-- Contact Section -->
         <div class="contact-section">
-            <h3 class="contact-title">📞 Reserve Your Table</h3>
-            <div class="phone-number">{{event_reservation_ph_number}}</div>
-            <div class="contact-name">{{event_reservation_cont_person}}</div>
-            
             <div class="info-grid">
-                <div class="info-item">
-                    <div class="info-label">Age Limit</div>
-                    <div class="info-value">12+ Only</div>
-                </div>
                 <div class="info-item">
                     <div class="info-label">Booking</div>
                     <div class="info-value">Advance Required</div>
@@ -491,10 +481,6 @@
                 <div class="info-item">
                     <div class="info-label">Cancellation</div>
                     <div class="info-value">48hrs Notice</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Location</div>
-                    <div class="info-value">Palace Road</div>
                 </div>
             </div>
             
@@ -510,21 +496,22 @@
             </div>
             
             <div style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">
-                Experience the warmth of authentic home cooking in Jamnagar's most intimate dining setting
+                Experience the warmth of authentic home cooking in Jamnagar
             </div>
         </div>
         
         <!-- Footer -->
         <div class="footer">
-            <div>Ba's Supper Club | Est. 2025 | Home-style Mexican Dining</div>
+            <div>Ba's Catering | Est. 2025</div>
             <div style="margin-top: 0.5rem;">beenapparekh@gmail.com</div>
         </div>
     </div>
     
-    <!-- WhatsApp Share Button -->
+    <!-- WhatsApp Share Button 
     <button class="share-button" onclick="shareOnWhatsApp()" title="Share on WhatsApp">
         📱
     </button>
+	-->
     
     <script>
         function shareOnWhatsApp() {

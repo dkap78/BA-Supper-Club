@@ -1,0 +1,21 @@
+{
+  "name": "ba_supper_club",
+  "version": "1.0.0",
+  "description": "BA's Supper Club",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Smile Software",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "multer": "^2.0.2",
+    "node": "^22.18.0",
+    "nodemailer": "^7.0.5",
+    "pdfkit": "^0.17.2"
+  }
+}

@@ -1,0 +1,431 @@
+{
+  "description": "We offer customized home-style catering for events and gatherings.",
+  "mealTypeOrder": [
+    "Soups",
+    "Salads",
+    "Starters",
+    "Italian",
+    "Thai",
+    "Burmese"
+  ],
+  "menus": [
+    {
+      "id": "c-1768463192365",
+      "mealType": "Italian",
+      "name": "Baked Spinach with Spaghetti",
+      "description": "",
+      "qty": 1,
+      "qtyUnit": "Serve",
+      "price": 270,
+      "isActive": true
+    },
+    {
+      "id": "c-1768463208728",
+      "mealType": "Italian",
+      "name": "Uds special caramelized onion pasta - Fettuccine or spaghetti",
+      "qty": 1,
+      "qtyUnit": "Serve",
+      "price": 250,
+      "isActive": true
+    },
+    {
+      "id": "c-1768463225608",
+      "mealType": "Italian",
+      "name": "Ba's Spahetti in thick tomato sauce with vegetables",
+      "qty": 1,
+      "qtyUnit": "Serve",
+      "price": 200,
+      "isActive": true
+    },
+    {
+      "id": "c-1768463164574",
+      "mealType": "Burmese",
+      "name": "Khow-suey",
+      "qty": 1,
+      "qtyUnit": "Serve",
+      "price": 300,
+      "isActive": true
+    },
+    {
+      "id": "c-1768204753473",
+      "mealType": "Soups",
+      "name": "Tomato & Basil",
+      "qty": 250,
+      "qtyUnit": "ml",
+      "price": 120,
+      "isActive": true
+    },
+    {
+      "id": "c-1768204804522",
+      "mealType": "Soups",
+      "name": "Roasted Bellpepper",
+      "qty": 250,
+      "qtyUnit": "ml",
+      "price": 150,
+      "isActive": true
+    },
+    {
+      "id": "c-1768224512162",
+      "mealType": "Soups",
+      "name": "Pumpkin",
+      "qty": 250,
+      "qtyUnit": "gm",
+      "price": 120,
+      "isActive": true
+    },
+    {
+      "id": "c-1768224528577",
+      "mealType": "Soups",
+      "name": "French Onion",
+      "qty": 250,
+      "qtyUnit": "gm",
+      "price": 150,
+      "isActive": true
+    },
+    {
+      "id": "c-1768224547761",
+      "mealType": "Soups",
+      "name": "Cream of Spinach",
+      "qty": 250,
+      "qtyUnit": "gm",
+      "price": 120,
+      "isActive": true
+    },
+    {
+      "id": "c-1768224561394",
+      "mealType": "Soups",
+      "name": "Chilli Bean",
+      "qty": 250,
+      "qtyUnit": "gm",
+      "price": 150,
+      "isActive": true
+    },
+    {
+      "id": "c-1768224582250",
+      "mealType": "Soups",
+      "name": "Cream of Broccoli and almond",
+      "qty": 250,
+      "qtyUnit": "gm",
+      "price": 150,
+      "isActive": true
+    },
+    {
+      "id": "c-1768224597130",
+      "mealType": "Soups",
+      "name": "Cream of Potato",
+      "qty": 250,
+      "qtyUnit": "gm",
+      "price": 120,
+      "isActive": true
+    },
+    {
+      "id": "c-1768224608618",
+      "mealType": "Soups",
+      "name": "Mixed Vegetables",
+      "qty": 250,
+      "qtyUnit": "gm",
+      "price": 120,
+      "isActive": true
+    },
+    {
+      "id": "c-1768205021124",
+      "mealType": "Salads",
+      "name": "Thai Papaya ",
+      "qty": 250,
+      "qtyUnit": "gm",
+      "price": 150,
+      "isActive": true
+    },
+    {
+      "id": "c-1768224635387",
+      "mealType": "Salads",
+      "name": "Raw Mango",
+      "qty": 250,
+      "qtyUnit": "gm",
+      "price": 120,
+      "isActive": true
+    },
+    {
+      "id": "c-1768224650195",
+      "mealType": "Salads",
+      "name": "Carrot & Beetrot",
+      "qty": 250,
+      "qtyUnit": "gm",
+      "price": 100,
+      "isActive": true
+    },
+    {
+      "id": "c-1768224665331",
+      "mealType": "Salads",
+      "name": "Korean Cucumber",
+      "qty": 250,
+      "qtyUnit": "gm",
+      "price": 100,
+      "isActive": true
+    },
+    {
+      "id": "c-1768224681579",
+      "mealType": "Salads",
+      "name": "Mixed Vegetables",
+      "qty": 250,
+      "qtyUnit": "gm",
+      "price": 100,
+      "isActive": true
+    },
+    {
+      "id": "c-1768224704707",
+      "mealType": "Salads",
+      "name": "Make Your Own Salad",
+      "description": "Base Salad Choose from : Peanuts, Corn, Peas, Croutons, Lettuce, Carrot, Beetroot, Sweet Potato, Onion, Tomatoes, Cherry Tomato, Cucumber, Red Cabbage, Green / Red / Yellow Bellpeppers, Chana (Black & White), Green Onion, Edamame (if available).\n\nNuts - Pecan, Brazilian nuts, Hazel nuts, walnuts, dates, pumpkeen seeds, kismis, almonds.\n\nSalad dressing - Thousand Island, Italian dressing, Ranch, chipotle.",
+      "qty": 250,
+      "qtyUnit": "gm",
+      "price": 120,
+      "isActive": true
+    },
+    {
+      "id": "c-1768224739923",
+      "mealType": "Starters",
+      "name": "Sautéed Exotic Veg",
+      "qty": 250,
+      "qtyUnit": "gm",
+      "price": 150,
+      "isActive": true
+    },
+    {
+      "id": "c-1768224757108",
+      "mealType": "Starters",
+      "name": "Stuffed Mushroom",
+      "qty": 6,
+      "qtyUnit": "Pieces",
+      "price": 200,
+      "isActive": true
+    },
+    {
+      "id": "c-1768224768589",
+      "mealType": "Starters",
+      "name": "Bruschetta",
+      "qty": 2,
+      "qtyUnit": "Pieces",
+      "price": 140,
+      "isActive": true
+    },
+    {
+      "id": "c-1768224781444",
+      "mealType": "Starters",
+      "name": "Garlic Bread",
+      "qty": 2,
+      "qtyUnit": "Pieces",
+      "price": 150,
+      "isActive": true
+    },
+    {
+      "id": "c-1768224805884",
+      "mealType": "Starters",
+      "name": "Hummus (Plain, Beetroot, Roasted bellpapers, Carrot) with Chips",
+      "qty": 250,
+      "qtyUnit": "gm",
+      "price": 150,
+      "isActive": true
+    },
+    {
+      "id": "c-1768575157978",
+      "mealType": "Italian",
+      "name": "Basil Pesto pasta -  Fettuccine, spaghetti",
+      "description": "",
+      "qty": 1,
+      "qtyUnit": "Serve",
+      "price": 250,
+      "isActive": true
+    },
+    {
+      "id": "c-1768463129937",
+      "mealType": "Thai",
+      "name": "Thai Green Curry & Jasmine Rice",
+      "qty": 1,
+      "qtyUnit": "Serve",
+      "price": 300,
+      "isActive": true
+    },
+    {
+      "id": "c-1768575212627",
+      "mealType": "Gujarati",
+      "name": "Thepla",
+      "description": "",
+      "qty": 5,
+      "qtyUnit": "Pieces",
+      "price": 75,
+      "isActive": true
+    },
+    {
+      "id": "c-1768575231085",
+      "mealType": "Gujarati",
+      "name": "Potato suki bhaji",
+      "description": "",
+      "qty": 1,
+      "qtyUnit": "Serve",
+      "price": 150,
+      "isActive": true
+    },
+    {
+      "id": "c-1768575249236",
+      "mealType": "Gujarati",
+      "name": "Kanda Bateta nu bharelu shaak",
+      "description": "",
+      "qty": 1,
+      "qtyUnit": "Serve",
+      "price": 150,
+      "isActive": true
+    },
+    {
+      "id": "c-1768575264140",
+      "mealType": "Gujarati",
+      "name": "Mung (dry / gravy)",
+      "description": "",
+      "qty": 1,
+      "qtyUnit": "Serve",
+      "price": 90,
+      "isActive": true
+    },
+    {
+      "id": "c-1768575278132",
+      "mealType": "Gujarati",
+      "name": "Ringna Bateta nu bharelu shaak",
+      "description": "",
+      "qty": 1,
+      "qtyUnit": "Serve",
+      "price": 150,
+      "isActive": true
+    },
+    {
+      "id": "c-1768575307604",
+      "mealType": "Gujarati",
+      "name": "Undhiyu (Seasonal)",
+      "description": "",
+      "qty": 1,
+      "qtyUnit": "Serve",
+      "price": 200,
+      "isActive": true
+    },
+    {
+      "id": "c-1768575325108",
+      "mealType": "Punjabi",
+      "name": "Veg Jalfrezi",
+      "description": "",
+      "qty": 1,
+      "qtyUnit": "Serve",
+      "price": 200,
+      "isActive": true
+    },
+    {
+      "id": "c-1768575339804",
+      "mealType": "Punjabi",
+      "name": "Veg Korma",
+      "description": "",
+      "qty": 1,
+      "qtyUnit": "Serve",
+      "price": 250,
+      "isActive": true
+    },
+    {
+      "id": "c-1768575352997",
+      "mealType": "Punjabi",
+      "name": "Mushroom Sabzi",
+      "description": "",
+      "qty": 1,
+      "qtyUnit": "Serve",
+      "price": 250,
+      "isActive": true
+    },
+    {
+      "id": "c-1768575384069",
+      "mealType": "Punjabi",
+      "name": "Amritsari style Chhole with Bhature (3 pieces)",
+      "description": "",
+      "qty": 1,
+      "qtyUnit": "Serve",
+      "price": 300,
+      "isActive": true
+    },
+    {
+      "id": "c-1768575397861",
+      "mealType": "Punjabi",
+      "name": "Amritsari style Chhole",
+      "description": "",
+      "qty": 1,
+      "qtyUnit": "Serve",
+      "price": 250,
+      "isActive": true
+    },
+    {
+      "id": "c-1768575423581",
+      "mealType": "Punjabi",
+      "name": "Extra Bhatura",
+      "description": "",
+      "qty": 1,
+      "qtyUnit": "Pieces",
+      "price": 30,
+      "isActive": true
+    },
+    {
+      "id": "c-1768575437950",
+      "mealType": "Punjabi",
+      "name": "Amritsari Paneer Bhurji",
+      "description": "",
+      "qty": 1,
+      "qtyUnit": "Serve",
+      "price": 250,
+      "isActive": true
+    },
+    {
+      "id": "c-1768575501942",
+      "mealType": "Thali",
+      "name": "Basic Thali",
+      "description": "4 Rotli, Rice, Daal, Shaak & Kathol, Chhash, Papad",
+      "qty": 0,
+      "qtyUnit": "",
+      "price": 150,
+      "isActive": true
+    },
+    {
+      "id": "c-1768575525566",
+      "mealType": "Thali",
+      "name": "Premium Thali",
+      "description": "Poran poli, Khandvi, Daal, Rice, Sabzi, Chhash, Papad, Pickels",
+      "qty": 0,
+      "qtyUnit": "",
+      "price": 350,
+      "isActive": true
+    },
+    {
+      "id": "c-1768575558055",
+      "mealType": "Thali",
+      "name": "Deluxe Thali ",
+      "description": "Puri (5), Mango shrikhand/ Plain shrikhand/Fruit Shrikhand, Mixed bhindi sabzi, Kadhi, Rice, Papad, Chhash, Pickels",
+      "qty": 0,
+      "qtyUnit": "",
+      "price": 350,
+      "isActive": true
+    },
+    {
+      "id": "c-1768575580831",
+      "mealType": "Thali",
+      "name": "Super Deluxe Thali",
+      "description": "Puri, Fruit salad/Sitafal basundi(seasonal), Kadhi, Cauliflower sabzi/ Aloo sabzi, Rice, Papad, Chhash, Farsan, Pickels",
+      "qty": 0,
+      "qtyUnit": "",
+      "price": 450,
+      "isActive": true
+    }
+  ],
+  "notes": [
+    {
+      "note": "Minimum order of 4 and maximum order of 10 for each item."
+    },
+    {
+      "note": "To place an order please call Mrs. Bina Parekh - 99741 20608."
+    },
+    {
+      "note": "Order to be placed 48 hours in advance."
+    }
+  ]
+}

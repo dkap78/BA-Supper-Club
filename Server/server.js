@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url';
 import cors from 'cors';
 import multer from 'multer';
 import nodemailer from 'nodemailer';
+import PDFDocument from "pdfkit";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -76,6 +77,17 @@ app.use('/uploads', express.static(path.join(__dirname, 'data', 'uploads')));
 // Initialize uploads directory
 createUploadsDir();
 
+// API endpoint to get content.json
+app.get('/api/get-content', async (req, res) => {
+  try {
+    const contentPath = path.join(__dirname, 'data', 'content.json');
+    const data = await fs.readFile(contentPath, 'utf8');
+    res.json(JSON.parse(data));
+  } catch (error) {
+    console.error('Error reading content.json:', error);
+    res.status(500).json({ success: false, message: 'Failed to read content.json' });
+  }
+});
 // API endpoint to update content.json
 app.post('/api/update-content', async (req, res) => {
   try {
@@ -88,6 +100,17 @@ app.post('/api/update-content', async (req, res) => {
   }
 });
 
+// API endpoint to get feedbacks.json
+app.get('/api/get-feedbacks', async (req, res) => {
+  try {
+    const feedbacksPath = path.join(__dirname, 'data', 'feedbacks.json');
+    const data = await fs.readFile(feedbacksPath, 'utf8');
+    res.json(JSON.parse(data));
+  } catch (error) {
+    console.error('Error reading feedbacks.json:', error);
+    res.status(500).json({ success: false, message: 'Failed to read feedbacks.json' });
+  }
+});
 // API endpoint to update feedbacks.json
 app.post('/api/update-feedbacks', async (req, res) => {
   try {
@@ -100,6 +123,41 @@ app.post('/api/update-feedbacks', async (req, res) => {
   }
 });
 
+// API endpoint to get club-pamphlet.html
+app.get('/api/get-club-pamphlet', async (req, res) => {
+  try {
+    const pamphletPath = path.join(__dirname, 'data', 'club-pamphlet.html');
+    const data = await fs.readFile(pamphletPath, 'utf8');
+    res.type('text/html').send(data);  // send raw HTML as response
+  } catch (error) {
+    console.error('Error reading club pamphlet.html:', error);
+    res.status(500).json({ success: false, message: 'Failed to read club pamphlet.hml' });
+  }
+});
+
+// API endpoint to get club-pamphlet.html
+app.get('/api/get-catering-pamphlet', async (req, res) => {
+  try {
+    const pamphletPath = path.join(__dirname, 'data', 'catering-pamphlet.html');
+    const data = await fs.readFile(pamphletPath, 'utf8');
+    res.type('text/html').send(data);  // send raw HTML as response
+  } catch (error) {
+    console.error('Error reading catering pamphlet.html:', error);
+    res.status(500).json({ success: false, message: 'Failed to read catering pamphlet.hml' });
+  }
+});
+
+// API endpoint to get admin.json
+app.get('/api/get-admin', async (req, res) => {
+  try {
+    const feedbacksPath = path.join(__dirname, 'data', 'admin.json');
+    const data = await fs.readFile(feedbacksPath, 'utf8');
+    res.json(JSON.parse(data));
+  } catch (error) {
+    console.error('Error reading admin.json:', error);
+    res.status(500).json({ success: false, message: 'Failed to read admin.json' });
+  }
+});
 // API endpoint to update admin.json
 app.post('/api/update-admin', async (req, res) => {
   try {
@@ -109,6 +167,97 @@ app.post('/api/update-admin', async (req, res) => {
   } catch (error) {
     console.error('Error updating admin data:', error);
     res.status(500).json({ success: false, message: 'Failed to update admin data' });
+  }
+});
+
+// API endpoint to get catering.json
+app.get('/api/get-catering', async (req, res) => {
+  try {
+    const cateringFile = path.join(__dirname, 'data', 'catering.json');
+    const data = await fs.readFile(cateringFile, 'utf-8');
+    res.json(JSON.parse(data));
+  } catch {
+    console.error('Error reading catering.json:', error);
+    res.status(500).json({ message: 'Failed to load catering data' });
+  }
+});
+// API endpoint to update catering.json
+app.post('/api/update-catering', async (req, res) => {
+  try {
+    const cateringFile  = path.join(__dirname, 'data', 'catering.json');
+    const { description, mealTypeOrder, menus, notes } = req.body;
+
+    await fs.writeFile(
+      cateringFile,
+      JSON.stringify({ description, mealTypeOrder, menus, notes }, null, 2)
+    );
+
+    res.json({ success: true, message: 'Catering data updated successfully' });
+  } catch(error) {
+    console.error('Error updating catering data:', error);
+    res.status(500).json({ message: 'Failed to save catering data' });
+  }
+});
+// API endpoint to download catering PDF
+app.get('/api/download-catering-menu', async (req, res) => {
+  try {
+    const cateringFile = path.join(__dirname, 'data', 'catering.json');
+    const data = await fs.readFile(cateringFile, 'utf-8');
+  } catch {
+    console.error('Error reading catering.json:', error);
+    res.status(500).json({ message: 'Failed to load catering data' });
+  }
+
+  try 
+  {
+    const doc = new PDFDocument({ margin: 40, size: "A4" });
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'attachment; filename=catering-menu.pdf');
+    doc.pipe(res);
+
+    doc.fontSize(20).text('Catering Menu', { align: "center" });
+    doc.moveDown();
+
+    doc.fontSize(11).text(data.description || "");
+    doc.moveDown(2);
+
+    // Group by meal type
+    const grouped = {};
+    (catering.menus || []).forEach(i => {
+      grouped[i.mealType] = grouped[i.mealType] || [];
+      grouped[i.mealType].push(i);
+    });
+
+    Object.keys(grouped).forEach(type => {
+      doc.fontSize(14).text(type, { underline: true });
+      doc.moveDown(0.5);
+
+      grouped[type].forEach(item => {
+        doc.fontSize(11).text(
+          `${item.name}  (${item.qty} ${item.qtyUnit})  -  ₹${item.price}`
+        );
+      });
+
+      doc.moveDown();
+    });
+
+    // Notes
+    if (catering.notes?.length) {
+      doc.moveDown();
+      doc.fontSize(13).text("Notes", { underline: true });
+      catering.notes.forEach(n => doc.text(`• ${n.note}`));
+    }
+
+    // Footer
+    doc.moveDown(3);
+    doc.fontSize(11).text("BA’s Supper Club Catering");
+    doc.text("Jamnagar, Gujarat, India");
+    doc.text("Phone: +91 99741 20608");
+
+    doc.end();
+  } catch (err) {
+    console.error("Error while generating Catering PDF: ", error);
+    res.status(500).send("Failed to generate PDF.");
   }
 });
 

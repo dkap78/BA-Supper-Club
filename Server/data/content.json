@@ -4,12 +4,115 @@
   },
   "menus": [
     {
+      "id": "menu-1756793518415",
+      "date": "2025-09-12",
+      "title": "Ba's Italian Menu",
+      "pricePerPerson": 1200,
+      "maxPersons": 8,
+      "childrenAllowed": false,
+      "categories": {
+        "starter": [
+          {
+            "name": "Antipasto: Sautéed Exotic Vegetables in Olive Oil",
+            "description": "A vibrant medley of seasonal vegetables, lightly sautéed with garlic and herbs in olive oil—crisp, healthy, and full of flavor."
+          }
+        ],
+        "mainCourse": [
+          {
+            "name": "Primo Piatto: Baked Spinach with Spaghetti",
+            "description": "Spaghetti with spinach, garlic, and herbs, baked under a golden cheese crust—a warm, creamy, and comforting dish."
+          },
+          {
+            "name": "Garlic Bread",
+            "description": " Buttery, herb-sprinkled garlic bread—crispy outside, soft inside, made with Ba's special touch."
+          }
+        ],
+        "desserts": [
+          {
+            "name": "Dolce: Tiramisu",
+            "description": "Espresso-soaked ladyfingers layered with mascarpone cream and cocoa—a light, dreamy Italian classic."
+          }
+        ]
+      },
+      "startTime": "19:30",
+      "endTime": "22:30"
+    },
+    {
+      "id": "menu-1754145135359",
+      "date": "2025-08-23",
+      "title": "Ba's Italian Menu",
+      "pricePerPerson": 1200,
+      "maxPersons": 8,
+      "childrenAllowed": false,
+      "categories": {
+        "starter": [
+          {
+            "name": "Sautéed Exotic Vegetables in Olive Oil",
+            "description": "A vibrant medley of seasonal vegetables, lightly sautéed with garlic and herbs in olive oil—crisp, healthy, and full of flavor."
+          }
+        ],
+        "mainCourse": [
+          {
+            "name": "Baked Spinach with Spaghetti",
+            "description": "Spaghetti with spinach, garlic, and herbs, baked under a golden cheese crust—a warm, creamy, and comforting dish."
+          },
+          {
+            "name": "Garlic Bread",
+            "description": "Buttery, herb-sprinkled garlic bread—crispy outside, soft inside, made with Ba's special touch."
+          }
+        ],
+        "desserts": [
+          {
+            "name": "Tiramisu",
+            "description": "Espresso-soaked ladyfingers layered with mascarpone cream and cocoa—a light, dreamy Italian classic."
+          }
+        ]
+      },
+      "startTime": "20:00",
+      "endTime": "22:30",
+      "mealType": "lunch"
+    },
+    {
+      "id": "menu-1754139000249",
+      "date": "2025-08-02",
+      "title": "3-Course Mexican Menu (Public)",
+      "pricePerPerson": 1200,
+      "maxPersons": 8,
+      "childrenAllowed": false,
+      "categories": {
+        "starter": [
+          {
+            "name": "Salsa",
+            "description": "Homemade Salsa with fresh tomatoes"
+          }
+        ],
+        "mainCourse": [
+          {
+            "name": "Enchiladas",
+            "description": "Rolled tortillas filled with vegies and cheese, topped with Ba's signature sauce"
+          },
+          {
+            "name": "Mexican Rice and Beans",
+            "description": "Authentic Mexican rice served with seasoned black beans, fresh guacamole, sour cream, and various homemade salsas"
+          }
+        ],
+        "desserts": [
+          {
+            "name": "Churros",
+            "description": "Golden fried dough sticks rolled in cinnamon sugar, served with chocolate dipping sauce"
+          }
+        ]
+      },
+      "startTime": "19:00",
+      "endTime": "22:00"
+    },
+    {
       "id": "menu-2025-07-27",
       "date": "2025-07-27",
       "title": "Ba's Mexican Menu",
       "pricePerPerson": 1200,
       "maxPersons": 8,
-      "childrenAllowed": false,
+      "childrenAllowed": true,
       "categories": {
         "mainCourse": [
           {
@@ -27,7 +130,9 @@
             "description": "Golden fried dough sticks rolled in cinnamon sugar, served with chocolate dipping sauce"
           }
         ]
-      }
+      },
+      "startTime": "19:00",
+      "endTime": "22:00"
     }
   ],
   "feedback": {

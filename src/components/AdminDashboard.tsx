@@ -17,8 +17,16 @@ import {
   ChevronRight,
   Lock,
   CalendarDays,
-  CalendarClock
+  CalendarClock,
+  CookingPot,
+  ChefHat,
+  Undo2Icon,
+  Check,
+  Menu
 } from 'lucide-react';
+
+type CateringMealType = "Soups" | "Salads" | "Starters" | "Dessert";
+
 
 interface ConfigData {
   basePath: string,
@@ -82,14 +90,109 @@ interface FeedbackData {
   date: string;
 }
 
+interface CateringData {
+    description: string;
+    mealTypeOrder?: string[];
+    menus: Array<{
+      id: string;
+      mealType: string,
+      name: string;
+      description: string;
+      qty: number;
+      qtyUnit: string;
+      price: number;
+      isActive: boolean;
+    }>;
+    notes: Array<{
+      note: string;
+    }>;
+}
+
 interface AdminDashboardProps {
   onClose: () => void;
 }
+
+interface EditableDropdownProps {
+  value: string;
+  onChange: (val: string) => void;
+  options: string[];
+  placeholder?: string;
+}
+
+const EditableDropdown: React.FC<EditableDropdownProps> = ({
+  value,
+  onChange,
+  options,
+  placeholder
+}) => {
+  const [open, setOpen] = useState(false);
+  const [inputText, setInputText] = useState("");
+
+  // highlight matched text without filtering
+  const highlight = (text: string, match: string) => {
+    if (!match) return text;
+
+    const index = text.toLowerCase().indexOf(match.toLowerCase());
+    if (index === -1) return text;
+
+    return (
+      <>
+        {text.substring(0, index)}
+        <strong className="font-bold">
+          {text.substring(index, index + match.length)}
+        </strong>
+        {text.substring(index + match.length)}
+      </>
+    );
+  };
+
+  return (
+    <div className="relative">
+      <input
+        className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:ring-1 focus:ring-amber-500"
+        placeholder={placeholder}
+        value={open ? inputText : value}
+        onFocus={() => {
+          setInputText("");
+          setOpen(true);
+        }}
+        onChange={e => {
+          setInputText(e.target.value);
+          onChange(e.target.value); // allow free typing
+        }}
+        onBlur={() => setTimeout(() => setOpen(false), 150)}
+      />
+
+      {open && (
+        <div className="absolute z-50 mt-1 w-full bg-white border rounded shadow max-h-48 overflow-y-auto">
+          {options.map((opt, i) => (
+            <div
+              key={i}
+              onMouseDown={() => {
+                onChange(opt);
+                setOpen(false);
+                setInputText("");
+              }}
+              className={`px-3 py-1 cursor-pointer ${
+                opt === value
+                  ? "bg-amber-200 font-semibold"
+                  : "hover:bg-amber-100"
+              }`}
+            >
+              {highlight(opt, inputText)}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
 
 const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
   const [activeTab, setActiveTab] = useState('home');
   const [contentData, setContentData] = useState<ContentData | null>(null);
   const [feedbacks, setFeedbacks] = useState<FeedbackData[]>([]);
+  const [cateringData, setCateringData] = useState<CateringData | null>(null);
   const [loading, setLoading] = useState(true);
 
   // Menu tab state
@@ -113,6 +216,22 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [passwordSuccess, setPasswordSuccess] = useState('');
+  const [editingCateringItem, setEditingCateringItem] = useState<any | null>(null);
+  const [showCateringItemModal, setShowCateringItemModal] = useState(false);
+
+  const [cateringForm, setCateringForm] = useState({
+    mealType: "",
+    name: "",
+    description: "",
+    qty: 0,
+    qtyUnit: "",
+    price: "",
+    isActive: true
+  });
+  const [editingNoteIndex, setEditingNoteIndex] = useState<number | null>(null);
+  const [noteText, setNoteText] = useState("");
+  const [draggingMealType, setDraggingMealType] = useState<string | null>(null);
+  const [draggingItemId, setDraggingItemId] = useState<string | null>(null);
 
   const [apiServer, setApiServer] = useState('http://localhost:3001/api/');
 
@@ -161,6 +280,12 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
       const feedbackResponse = await fetch(`${data?.apiServer}get-feedbacks`);
       const feedbackData = await feedbackResponse.json();
       setFeedbacks(feedbackData);
+
+      const cateringResponse = await fetch(`${data?.apiServer}get-catering`);
+      const cateringData = await cateringResponse.json();
+      //ensure default order array exists
+      if (!cateringData.mealTypeOrder) cateringData.mealTypeOrder = [];
+      setCateringData(cateringData);
     } catch (error) {
       console.error('Error loading data:', error);
     } finally {
@@ -198,6 +323,28 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
     } catch (error) {
       console.error('Error saving data:', error);
       alert('Error saving content! Please make sure the server is running.');
+    }
+  };
+
+  const saveCateringData = async (data: any, showReloadMessage: boolean = false) => {
+    try {
+      // Update content data via API
+      const cateringResponse = await fetch(configData?.apiServer + 'update-catering', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (cateringResponse.ok) {
+        alert('Catering data saved successfully! Changes have been applied to the files.');
+      } else {
+        throw new Error('Failed to save catering data');
+      }
+    } catch (error) {
+      console.error('Error saving catering data:', error);
+      alert('Error saving catering content! Please make sure the server is running.');
     }
   };
 
@@ -434,6 +581,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
       setEditingItem(null);
       setNewItem({ name: '', description: '', category: 'mainCourse' });
     };
+    
     return (
       <div className="space-y-6">
         <div className="flex justify-between items-center">
@@ -750,6 +898,407 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
             </div>
           </div>
         )}
+      </div>
+    );
+  };
+
+  const reorderMealTypes = (fromType: string, toType: string) => {
+    if (!cateringData) return;
+
+    // Collect all meal types from menus
+    const allMealTypes = Array.from(
+      new Set((cateringData.menus || []).map(m => m.mealType).filter(Boolean))
+    );
+
+    // Start with saved order + append any missing meal types
+    const currentOrder = [
+      ...(cateringData.mealTypeOrder || []),
+      ...allMealTypes.filter(t => !(cateringData.mealTypeOrder || []).includes(t))
+    ];
+
+    const fromIndex = currentOrder.indexOf(fromType);
+    const toIndex = currentOrder.indexOf(toType);
+
+    if (fromIndex === -1 || toIndex === -1) return;
+
+    const updatedOrder = [...currentOrder];
+    const [moved] = updatedOrder.splice(fromIndex, 1);
+    updatedOrder.splice(toIndex, 0, moved);
+
+    const updated = {
+      ...cateringData,
+      mealTypeOrder: updatedOrder
+    };
+
+    setCateringData(updated);
+    saveCateringData(updated);
+  };
+
+  const reorderCateringItem = (
+    mealType: string,
+    fromId: string,
+    toId: string
+  ) => {
+    const menus = [...(cateringData?.menus || [])];
+
+    const sameTypeItems = menus.filter(m => m.mealType === mealType);
+    const otherItems = menus.filter(m => m.mealType !== mealType);
+
+    const fromIndex = sameTypeItems.findIndex(m => m.id === fromId);
+    const toIndex = sameTypeItems.findIndex(m => m.id === toId);
+
+    if (fromIndex === -1 || toIndex === -1) return;
+
+    const [moved] = sameTypeItems.splice(fromIndex, 1);
+    sameTypeItems.splice(toIndex, 0, moved);
+
+    const updatedMenus = [...otherItems, ...sameTypeItems];
+
+    setCateringData({ ...cateringData!, menus: updatedMenus });
+    saveCateringData({ ...cateringData!, menus: updatedMenus });
+  };
+
+  const renderCateringTab = () => {
+    if (!cateringData) return null;
+
+    // group menus by mealType
+    const grouped = (cateringData.menus || []).reduce((acc: any, item: any) => {
+      acc[item.mealType] = acc[item.mealType] || [];
+      acc[item.mealType].push(item);
+      return acc;
+    }, {});
+
+    const save = async (data: any) => {
+      setCateringData(data);
+      await saveCateringData(data);
+    };
+
+    const openNew = () => {
+      setEditingCateringItem(null);
+      setCateringForm({
+        mealType: "",
+        name: "",
+        description: "",
+        qty: 0,
+        qtyUnit: "",
+        price: "",
+        isActive: true
+      });
+      setShowCateringItemModal(true);
+    };
+
+    const openEdit = (item: any) => {
+      setEditingCateringItem(item);
+      setCateringForm({
+        mealType: item.mealType,
+        name: item.name,
+        description: item.description,
+        qty: item.qty,
+        qtyUnit: item.qtyUnit,
+        price: String(item.price),
+        isActive: item.isActive
+      });
+      setShowCateringItemModal(true);
+    };
+
+    const saveItem = () => {
+      let menus = [...(cateringData.menus || [])];
+
+      if (editingCateringItem) {
+        menus = menus.filter(m => m.id !== editingCateringItem.id);
+      }
+
+      menus.push({
+        id: editingCateringItem?.id || `c-${Date.now()}`,
+        mealType: cateringForm.mealType,
+        name: cateringForm.name,
+        description: cateringForm.description,
+        qty: cateringForm.qty,
+        qtyUnit: cateringForm.qtyUnit,
+        price: Number(cateringForm.price),
+        isActive: cateringForm.isActive
+      });
+
+      save({ ...cateringData, menus });
+      setShowCateringItemModal(false);
+    };
+
+    const deleteItem = (id: string) => {
+      const menus = (cateringData.menus || []).filter(m => m.id !== id);
+      save({ ...cateringData, menus });
+    };
+
+    const saveNote = () => {
+      const notes = [...cateringData.notes];
+
+      if (editingNoteIndex === null) {
+        notes.push({ note: noteText });
+      } else {
+        notes[editingNoteIndex].note = noteText;
+        setEditingNoteIndex(null);
+      }
+
+      setNoteText("");
+      save({ ...cateringData, notes });
+    };
+
+    const deleteNote = (i: number) => {
+      const notes = [...cateringData.notes];
+      notes.splice(i, 1);
+      save({ ...cateringData, notes });
+    };
+
+    const existingMealTypes = Array.from(
+      new Set((cateringData.menus || []).map(m => m.mealType).filter(Boolean))
+    );
+
+    const existingQtyUnits = Array.from(
+      new Set((cateringData.menus || []).map(m => m.qtyUnit).filter(Boolean))
+    );
+
+    const allMealTypes = Array.from(
+      new Set((cateringData?.menus || []).map(m => m.mealType).filter(Boolean))
+    );
+
+    const orderedMealTypes = [
+      ...(cateringData?.mealTypeOrder || []),
+      ...allMealTypes.filter(t => !(cateringData?.mealTypeOrder || []).includes(t))
+    ];
+
+    return (
+      <div className="space-y-6">
+
+        {/* DESCRIPTION */}
+        <div>
+          <label className="block text-sm font-medium">Description</label>
+          <textarea
+            value={cateringData.description}
+            onChange={e => setCateringData({ ...cateringData, description: e.target.value })}
+            className="w-full border p-2 rounded"
+          />
+          <div className="text-xs text-right">
+            {(cateringData?.description || "").length} char(s)
+          </div>
+        </div>
+
+        <hr></hr>
+
+        {/* MENU */}
+        <div>
+          <div className="flex justify-between items-center">
+            <h3 className="text-xl font-semibold text-gray-900">Catering Menu</h3>
+            <button onClick={openNew} className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 flex items-center space-x-2">
+              <Plus className="w-4 h-4" />
+              <span>Add Menu</span>
+            </button>
+          </div>
+
+          {orderedMealTypes.map(type => (
+            <div
+              key={type}
+              draggable
+              onDragStart={() => setDraggingMealType(type)}
+              onDragOver={e => e.preventDefault()}
+              onDrop={() => {
+                if (draggingMealType && draggingMealType !== type) {
+                  reorderMealTypes(draggingMealType, type);
+                }
+                setDraggingMealType(null);
+              }}
+              className={`mt-4 border rounded p-2 cursor-move ${draggingMealType == type ? "bg-gray-100" : ""}`}>
+              <h4 className="flex items-center" title="Drag to reorder entire group">
+                <Menu size={18} className="text-gray-400" />
+                <span className='px-1 font-bold'>{type}</span>
+              </h4>
+              {grouped[type].map((m: any) => (
+                <div
+                  key={m.id}
+                  draggable
+                  onDragStart={() => setDraggingItemId(m.id)}
+                  onDragOver={e => e.preventDefault()}
+                  onDrop={() => {
+                    if (draggingItemId && draggingItemId !== m.id) {
+                      reorderCateringItem(m.mealType, draggingItemId, m.id);
+                    }
+                    setDraggingItemId(null);
+                  }}
+                  className={`flex justify-between py-1 cursor-move border-2 border-transparent ${draggingItemId === m.id ? "bg-amber-100" : ""} hover:border-gray-300 border-dashed`}                  
+                  title="Drag to reorder current item">
+                  <div className="flex items-center">
+                    <Menu size={18} className='text-gray-400' />
+                    {m.isActive && (<Check size={18} className='text-green-700'/>)}
+                    {!m.isActive && (<X size={18} className='text-red-700'/>)}
+                    <span className="px-1">{m.name} ({m.qty} {m.qtyUnit}) - ₹&nbsp;{m.price}</span>
+                  </div>
+                  <span className="space-x-2">
+                    <button onClick={() => openEdit(m)}><Edit size={14} /></button>
+                    <button onClick={() => deleteItem(m.id)}><Trash2 size={14} /></button>
+                  </span>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+
+        <hr></hr>
+
+        {/* NOTES */}
+        <div>
+          <h3 className="font-semibold text-lg">Notes</h3>
+          <ol className="list-decimal ml-4">
+            {cateringData.notes.map((n, i) => (
+              <li key={i}>
+                <div className="flex justify-between border-b py-1">
+                  <span>{n.note}</span>
+                  <span className="space-x-2">
+                    <button onClick={() => { setEditingNoteIndex(i); setNoteText(n.note); }}><Edit size={14} /></button>
+                    <button onClick={() => deleteNote(i)}><Trash2 size={14} /></button>
+                  </span>
+                </div>
+              </li>
+            ))}
+          </ol>
+
+          <div className="flex mt-2">
+            <input
+              type="text"
+              value={noteText}
+              onChange={e => setNoteText(e.target.value)}
+              placeholder="Enter note"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md"/>
+
+            {editingNoteIndex !== null && (<button
+              onClick={() => { setEditingNoteIndex(null); setNoteText("") }}
+              className="bg-gray-200 px-4 py-2 rounded-md flex items-center space-x-2 ml-2 hover:bg-gray-300">
+              <Undo2Icon className="w-4 h-4" />
+              <span>Cancel</span>
+            </button>)}
+            <button
+              onClick={saveNote}
+              className="bg-amber-600 text-white px-4 py-2 rounded-md hover:bg-amber-700 flex items-center space-x-2 ml-2">
+              <Save className="w-4 h-4" />
+              <span>{editingNoteIndex === null ? "Add" : "Update"}</span>
+            </button>
+          </div>
+        </div>
+
+        <button
+          onClick={() => saveCateringData(cateringData)}
+          className="bg-amber-600 text-white px-4 py-2 rounded-md hover:bg-amber-700 flex items-center space-x-2"
+        >
+          <Save className="w-4 h-4" />
+          <span>Save Changes</span>
+        </button>
+
+        {/* MODAL */}
+        {showCateringItemModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="flex justify-between items-center mb-4">
+                <h4 className="text-lg font-semibold">Edit Menu</h4>
+                <button
+                  onClick={() => setShowCateringItemModal(false)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Meal Type</label>
+                  <EditableDropdown
+                    value={cateringForm.mealType}
+                    onChange={val => setCateringForm({ ...cateringForm, mealType: val })}
+                    options={existingMealTypes}
+                    placeholder="Meal Type (e.g. Soups)"
+                  />
+                </div>
+
+                <div>
+                  <label className="flex items-center space-x-2 text-sm">
+                    <input
+                      type="checkbox"
+                      checked={cateringForm.isActive}
+                      onChange={e =>
+                        setCateringForm({ ...cateringForm, isActive: e.target.checked })
+                      }
+                    />
+                    <span>Is Active</span>
+                  </label>
+                </div>
+
+                <div className="col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                  <input
+                    type="text"
+                    value={cateringForm.name}
+                    onChange={e => setCateringForm({ ...cateringForm, name: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  />
+                </div>
+
+                <div className="col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                  <textarea
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                    rows={3}
+                    placeholder="Item Description (optional)"
+                    value={cateringForm.description}
+                    onChange={e =>
+                      setCateringForm({ ...cateringForm, description: e.target.value })
+                    }
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Quantity</label>
+                  <input
+                    type="text"
+                    value={cateringForm.qty}
+                    onChange={e => setCateringForm({ ...cateringForm, qty: Number(e.target.value) })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Quantity Unit</label>
+                  <EditableDropdown
+                    value={cateringForm.qtyUnit}
+                    onChange={val =>
+                      setCateringForm({ ...cateringForm, qtyUnit: val })
+                    }
+                    options={existingQtyUnits}
+                    placeholder="Quantity Unit"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Price (₹)</label>
+                  <input
+                    type="text"
+                    value={cateringForm.price}
+                    onChange={e => setCateringForm({ ...cateringForm, price: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-end space-x-2 mt-6">
+                <button
+                    onClick={() => {setShowCateringItemModal(false)}}
+                    className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50">
+                    Cancel
+                  </button>
+                  <button
+                    onClick={saveItem}
+                    className="bg-amber-600 text-white px-4 py-2 rounded-md hover:bg-amber-700">Save
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
       </div>
     );
   };
@@ -1365,7 +1914,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
 
   const tabs = [
     { id: 'home', label: 'Home', icon: <Users className="w-4 h-4" /> },
-    { id: 'menu', label: 'Menu', icon: <Calendar className="w-4 h-4" /> },
+    { id: 'menu', label: 'Menu', icon: <CookingPot className="w-4 h-4" /> },
+    { id: 'catering', label: 'Catering', icon: <ChefHat className="w-4 h-4" /> },
     { id: 'feedback', label: 'Feedback', icon: <Mail className="w-4 h-4" /> },
     { id: 'reviews', label: 'Reviews', icon: <Eye className="w-4 h-4" /> },
     { id: 'gallery', label: 'Gallery', icon: <Image className="w-4 h-4" /> },
@@ -1412,6 +1962,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
         <div className="flex-1 p-6 overflow-y-auto">
           {activeTab === 'home' && renderHomeTab()}
           {activeTab === 'menu' && renderMenuTab()}
+          {activeTab === 'catering' && renderCateringTab()}
           {activeTab === 'feedback' && renderFeedbackTab()}
           {activeTab === 'reviews' && renderReviewsTab()}
           {activeTab === 'gallery' && renderGalleryTab()}

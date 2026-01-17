@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import html2pdf from 'html2pdf.js';
 import AdminDashboard from './components/AdminDashboard';
+import CateringDialog from './components/CateringDialog';
 
 interface ConfigData {
   basePath: string,
@@ -89,6 +90,7 @@ function App() {
   const [contentData, setContentData] = useState<ContentData | null>(null);
   const [pemphletData, setPemphletData] = useState('');
   const [selectedAlbum, setSelectedAlbum] = useState<any>(null);
+  const [showCatering, setShowCatering] = useState(false);
   const [currentGalleryIndex, setCurrentGalleryIndex] = useState(0);
   const [feedbackForm, setFeedbackForm] = useState({
     name: '',
@@ -136,11 +138,11 @@ function App() {
 
   const loadPemphletData = async (data: any) => {
     try {
-      const response = await fetch(`${data?.apiServer}get-pamphlet`);
+      const response = await fetch(`${data?.apiServer}get-club-pamphlet`);
       const content = await response.text();
       setPemphletData(content);
     } catch (error) {
-      console.error('Error loading pemphlet content:', error);
+      console.error('Error loading club pemphlet content:', error);
     }
   };
 
@@ -500,6 +502,7 @@ function App() {
                 <a href="#home" className="text-amber-400 hover:text-amber-300 px-3 py-2 text-sm font-medium transition-colors">Home</a>
                 <a href="#menu" className="text-gray-300 hover:text-amber-300 px-3 py-2 text-sm font-medium transition-colors">Menu</a>
                 <a href="#experience" className="text-gray-300 hover:text-amber-300 px-3 py-2 text-sm font-medium transition-colors">Experience</a>
+                <a onClick={() => setShowCatering(true)} className="text-gray-300 hover:text-amber-300 px-3 py-2 text-sm font-medium transition-colors">Catering</a>
                 <a href="#testimonials" className="text-gray-300 hover:text-amber-300 px-3 py-2 text-sm font-medium transition-colors">Reviews</a>
                 <a href="#gallery" className="text-gray-300 hover:text-amber-300 px-3 py-2 text-sm font-medium transition-colors">Gallery</a>
                 <a href="#feedback" className="text-gray-300 hover:text-amber-300 px-3 py-2 text-sm font-medium transition-colors">Feedback</a>
@@ -525,6 +528,7 @@ function App() {
               <a href="#home" className="text-amber-400 hover:text-amber-300 block px-3 py-2 text-base font-medium">Home</a>
               <a href="#menu" className="text-gray-300 hover:text-amber-300 block px-3 py-2 text-base font-medium">Menu</a>
               <a href="#experience" className="text-gray-300 hover:text-amber-300 block px-3 py-2 text-base font-medium">Experience</a>
+              <a onClick={() => setShowCatering(true)} className="text-gray-300 hover:text-amber-300 block px-3 py-2 text-base font-medium">Catering</a>
               <a href="#testimonials" className="text-gray-300 hover:text-amber-300 block px-3 py-2 text-base font-medium">Reviews</a>
               <a href="#gallery" className="text-gray-300 hover:text-amber-300 block px-3 py-2 text-base font-medium">Gallery</a>
               <a href="#feedback" className="text-gray-300 hover:text-amber-300 block px-3 py-2 text-base font-medium">Feedback</a>
@@ -732,6 +736,9 @@ function App() {
           </div>
         </div>
       </section>
+
+      {/* Catering Dialog */}
+      {showCatering && <CateringDialog onClose={() => setShowCatering(false)} />}
 
       {/* Testimonials Section */}
       {activeReviews.length > 0 && (
