@@ -47,7 +47,7 @@ node server.js
 │   ├── components/
 │   │   └── AdminDashboard.tsx    # Admin interface
 │   │   └── CateringAdmin.tsx     # Catering Admin interface
-│   │   └── CaterubgDialog.tsx    # Catering Dialog Content
+│   │   └── CateringDialog.tsx    # Catering Dialog Content
 │   ├── App.tsx                   # Main application
 │   └── main.tsx                  # Entry point
 ├── public/
