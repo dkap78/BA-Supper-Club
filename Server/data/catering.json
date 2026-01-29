@@ -1,12 +1,21 @@
 {
-  "description": "We offer customized home-style catering for events and gatherings.",
+  "description": "My primary goal is to create a unique, intimate, and high-quality food.\n\nThrough this venture, I also hope to share my culinary vision by presenting a variety of cuisines and dishes that are rarely found in the restaurants of Jamnagar.",
   "mealTypeOrder": [
     "Soups",
     "Salads",
+    "Make Your Own Salad",
+    "Salad Add-Ons",
     "Starters",
-    "Italian",
     "Thai",
-    "Burmese"
+    "Burmese",
+    "Italian",
+    "Mexican",
+    "Gujarati",
+    "Punjabi",
+    "Thali",
+    "Street Style",
+    "One Pot Meals",
+    "Desserts"
   ],
   "menus": [
     {
@@ -170,16 +179,6 @@
       "qty": 250,
       "qtyUnit": "gm",
       "price": 100,
-      "isActive": true
-    },
-    {
-      "id": "c-1768224704707",
-      "mealType": "Salads",
-      "name": "Make Your Own Salad",
-      "description": "Base Salad Choose from : Peanuts, Corn, Peas, Croutons, Lettuce, Carrot, Beetroot, Sweet Potato, Onion, Tomatoes, Cherry Tomato, Cucumber, Red Cabbage, Green / Red / Yellow Bellpeppers, Chana (Black & White), Green Onion, Edamame (if available).\n\nNuts - Pecan, Brazilian nuts, Hazel nuts, walnuts, dates, pumpkeen seeds, kismis, almonds.\n\nSalad dressing - Thousand Island, Italian dressing, Ranch, chipotle.",
-      "qty": 250,
-      "qtyUnit": "gm",
-      "price": 120,
       "isActive": true
     },
     {
@@ -414,6 +413,386 @@
       "qty": 0,
       "qtyUnit": "",
       "price": 450,
+      "isActive": true
+    },
+    {
+      "id": "c-1769583363651",
+      "mealType": "Mexican",
+      "name": "Enchiladas",
+      "description": "",
+      "qty": 2,
+      "qtyUnit": "Pieces",
+      "price": 300,
+      "isActive": true
+    },
+    {
+      "id": "c-1769583430171",
+      "mealType": "Mexican",
+      "name": "Quesadillas - Beans ",
+      "description": "with salsa, sour cream and guacamole",
+      "qty": 0,
+      "qtyUnit": "",
+      "price": 350,
+      "isActive": true
+    },
+    {
+      "id": "c-1769583452939",
+      "mealType": "Mexican",
+      "name": "Quesadillas - Exotic Vegies",
+      "description": "with salsa, sour cream and guacamole",
+      "qty": 0,
+      "qtyUnit": "",
+      "price": 350,
+      "isActive": true
+    },
+    {
+      "id": "c-1769583475979",
+      "mealType": "Mexican",
+      "name": "7 Layered Dip & Chips",
+      "description": "",
+      "qty": 0,
+      "qtyUnit": "",
+      "price": 300,
+      "isActive": true
+    },
+    {
+      "id": "c-1769583562898",
+      "mealType": "Street Style",
+      "name": "Usal Paun",
+      "description": "",
+      "qty": 1,
+      "qtyUnit": "Serve",
+      "price": 150,
+      "isActive": true
+    },
+    {
+      "id": "c-1769583584498",
+      "mealType": "Street Style",
+      "name": "Misal Paun",
+      "description": "",
+      "qty": 1,
+      "qtyUnit": "Serve",
+      "price": 150,
+      "isActive": true
+    },
+    {
+      "id": "c-1769583599610",
+      "mealType": "Street Style",
+      "name": "Dahi Vada",
+      "description": "",
+      "qty": 1,
+      "qtyUnit": "Serve",
+      "price": 100,
+      "isActive": true
+    },
+    {
+      "id": "c-1769583616730",
+      "mealType": "Street Style",
+      "name": "Sabudana Vada",
+      "description": "",
+      "qty": 0,
+      "qtyUnit": "",
+      "price": 100,
+      "isActive": true
+    },
+    {
+      "id": "c-1769583631483",
+      "mealType": "Street Style",
+      "name": "Karela ni chhaal na dhokla",
+      "description": "",
+      "qty": 0,
+      "qtyUnit": "",
+      "price": 100,
+      "isActive": true
+    },
+    {
+      "id": "c-1769583643930",
+      "mealType": "Street Style",
+      "name": "Stuffed Vegetable dhokla",
+      "description": "",
+      "qty": 0,
+      "qtyUnit": "",
+      "price": 100,
+      "isActive": true
+    },
+    {
+      "id": "c-1769583656650",
+      "mealType": "Street Style",
+      "name": "Pattice",
+      "description": "",
+      "qty": 0,
+      "qtyUnit": "",
+      "price": 150,
+      "isActive": true
+    },
+    {
+      "id": "c-1769583666450",
+      "mealType": "Street Style",
+      "name": "Soya Chunk Tikkis with Greek tzatziki sauce",
+      "description": "",
+      "qty": 0,
+      "qtyUnit": "",
+      "price": 200,
+      "isActive": true
+    },
+    {
+      "id": "c-1769583712859",
+      "mealType": "One Pot Meals",
+      "name": "Dhaan Shaak with Brown Rice",
+      "description": "",
+      "qty": 0,
+      "qtyUnit": "",
+      "price": 200,
+      "isActive": true
+    },
+    {
+      "id": "c-1769583756387",
+      "mealType": "One Pot Meals",
+      "name": "7 Layered Veg Biryani",
+      "description": "",
+      "qty": 0,
+      "qtyUnit": "",
+      "price": 250,
+      "isActive": true
+    },
+    {
+      "id": "c-1769583770218",
+      "mealType": "One Pot Meals",
+      "name": "Cabbage Rice and Kadhi",
+      "description": "",
+      "qty": 0,
+      "qtyUnit": "",
+      "price": 150,
+      "isActive": true
+    },
+    {
+      "id": "c-1769583780859",
+      "mealType": "One Pot Meals",
+      "name": "Basil Pesto Rice",
+      "description": "",
+      "qty": 0,
+      "qtyUnit": "",
+      "price": 200,
+      "isActive": true
+    },
+    {
+      "id": "c-1769583794802",
+      "mealType": "One Pot Meals",
+      "name": "Puliyogari with Veg Raita",
+      "description": "",
+      "qty": 0,
+      "qtyUnit": "",
+      "price": 150,
+      "isActive": true
+    },
+    {
+      "id": "c-1769583805682",
+      "mealType": "One Pot Meals",
+      "name": "Green Pulao",
+      "description": "",
+      "qty": 0,
+      "qtyUnit": "",
+      "price": 150,
+      "isActive": true
+    },
+    {
+      "id": "c-1769583816403",
+      "mealType": "One Pot Meals",
+      "name": "Spanish Rice",
+      "description": "",
+      "qty": 0,
+      "qtyUnit": "",
+      "price": 200,
+      "isActive": true
+    },
+    {
+      "id": "c-1769583826938",
+      "mealType": "One Pot Meals",
+      "name": "Tawa Pulao",
+      "description": "",
+      "qty": 0,
+      "qtyUnit": "",
+      "price": 200,
+      "isActive": true
+    },
+    {
+      "id": "c-1769583853290",
+      "mealType": "Desserts",
+      "name": "Gajar Halwa (Seasonal)",
+      "description": "",
+      "qty": 250,
+      "qtyUnit": "gm",
+      "price": 150,
+      "isActive": true
+    },
+    {
+      "id": "c-1769583869650",
+      "mealType": "Desserts",
+      "name": "Badam Halwa",
+      "description": "",
+      "qty": 250,
+      "qtyUnit": "gm",
+      "price": 200,
+      "isActive": true
+    },
+    {
+      "id": "c-1769583887466",
+      "mealType": "Desserts",
+      "name": "Mohanthaal",
+      "description": "",
+      "qty": 250,
+      "qtyUnit": "gm",
+      "price": 150,
+      "isActive": true
+    },
+    {
+      "id": "c-1769583914155",
+      "mealType": "Desserts",
+      "name": "Mango Shrikhand (Seasonal)",
+      "description": "",
+      "qty": 250,
+      "qtyUnit": "gm",
+      "price": 150,
+      "isActive": true
+    },
+    {
+      "id": "c-1769583954146",
+      "mealType": "Desserts",
+      "name": "Fruit Salad",
+      "description": "",
+      "qty": 1,
+      "qtyUnit": "bowl",
+      "price": 150,
+      "isActive": true
+    },
+    {
+      "id": "c-1769583974891",
+      "mealType": "Desserts",
+      "name": "Plain Shrikhand",
+      "description": "",
+      "qty": 250,
+      "qtyUnit": "gm",
+      "price": 150,
+      "isActive": true
+    },
+    {
+      "id": "c-1769583991899",
+      "mealType": "Desserts",
+      "name": "Sitafal Basundi (Seasonal)",
+      "description": "",
+      "qty": 250,
+      "qtyUnit": "gm",
+      "price": 200,
+      "isActive": true
+    },
+    {
+      "id": "c-1769584011619",
+      "mealType": "Desserts",
+      "name": "Plain Basundi",
+      "description": "",
+      "qty": 250,
+      "qtyUnit": "gm",
+      "price": 150,
+      "isActive": true
+    },
+    {
+      "id": "c-1769584028899",
+      "mealType": "Desserts",
+      "name": "Adadiya (Seasonal)",
+      "description": "",
+      "qty": 250,
+      "qtyUnit": "gm",
+      "price": 300,
+      "isActive": true
+    },
+    {
+      "id": "c-1769584046699",
+      "mealType": "Desserts",
+      "name": "Sukhdi",
+      "description": "",
+      "qty": 250,
+      "qtyUnit": "gm",
+      "price": 150,
+      "isActive": true
+    },
+    {
+      "id": "c-1769584063195",
+      "mealType": "Desserts",
+      "name": "Khajur Paak",
+      "description": "",
+      "qty": 250,
+      "qtyUnit": "gm",
+      "price": 150,
+      "isActive": true
+    },
+    {
+      "id": "c-1768224704707",
+      "mealType": "Make Your Own Salad",
+      "name": "Base Salad (Any 3 vegitables + 1 dressing)",
+      "description": "Base Salad Choose from : Peanuts, Corn, Peas, Croutons, Lettuce, Carrot, Beetroot, Sweet Potato, Onion, Tomatoes, Cherry Tomato, Cucumber, Red Cabbage, Green / Red / Yellow Bellpeppers, Chana (Black & White), Green Onion, Edamame (if available).\n\nNuts - Pecan, Brazilian nuts, Hazel nuts, walnuts, dates, pumpkeen seeds, kismis, almonds.\n\nSalad dressing - Thousand Island, Italian dressing, Ranch, chipotle.",
+      "qty": 250,
+      "qtyUnit": "gm",
+      "price": 120,
+      "isActive": true
+    },
+    {
+      "id": "c-1769586605531",
+      "mealType": "Salad Add-Ons",
+      "name": "Boiled Chickpeas / Beans",
+      "description": "",
+      "qty": 0,
+      "qtyUnit": "",
+      "price": 25,
+      "isActive": true
+    },
+    {
+      "id": "c-1769586619691",
+      "mealType": "Salad Add-Ons",
+      "name": "Corn / Peas",
+      "description": "",
+      "qty": 0,
+      "qtyUnit": "",
+      "price": 20,
+      "isActive": true
+    },
+    {
+      "id": "c-1769586632315",
+      "mealType": "Salad Add-Ons",
+      "name": "Sprouts",
+      "description": "",
+      "qty": 0,
+      "qtyUnit": "",
+      "price": 30,
+      "isActive": true
+    },
+    {
+      "id": "c-1769586648867",
+      "mealType": "Salad Add-Ons",
+      "name": "Paneer Cubes",
+      "description": "",
+      "qty": 0,
+      "qtyUnit": "",
+      "price": 40,
+      "isActive": true
+    },
+    {
+      "id": "c-1769586677035",
+      "mealType": "Salad Add-Ons",
+      "name": "Nuts & Seeds",
+      "description": "",
+      "qty": 0,
+      "qtyUnit": "",
+      "price": 30,
+      "isActive": true
+    },
+    {
+      "id": "c-1769599642037",
+      "mealType": "Mexican",
+      "name": "Extra Salsas (Pico De Gallo / Verde)",
+      "description": "",
+      "qty": 0,
+      "qtyUnit": "",
+      "price": 0,
       "isActive": true
     }
   ],

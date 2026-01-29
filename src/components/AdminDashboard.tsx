@@ -233,6 +233,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
   const [draggingMealType, setDraggingMealType] = useState<string | null>(null);
   const [draggingItemId, setDraggingItemId] = useState<string | null>(null);
 
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   const [apiServer, setApiServer] = useState('http://localhost:3001/api/');
 
   useEffect(() => {
@@ -430,6 +432,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
   const renderHomeTab = () => (
     <div className="space-y-6">
       <h3 className="text-xl font-semibold text-gray-900">Home Content</h3>
+      <hr></hr>
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
           Summary Text (Max 500 characters)
@@ -1068,9 +1071,13 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
     return (
       <div className="space-y-6">
 
+        <h3 className="text-xl font-semibold text-gray-900">Catering Menu</h3>
+
+        <hr></hr>
+
         {/* DESCRIPTION */}
         <div>
-          <label className="block text-sm font-medium">Description</label>
+          <label className="block text-lg font-medium">Description</label>
           <textarea
             value={cateringData.description}
             onChange={e => setCateringData({ ...cateringData, description: e.target.value })}
@@ -1086,7 +1093,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
         {/* MENU */}
         <div>
           <div className="flex justify-between items-center">
-            <h3 className="text-xl font-semibold text-gray-900">Catering Menu</h3>
+            <h3 className="text-lg font-semibold text-gray-900">Menu Items</h3>
             <button onClick={openNew} className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 flex items-center space-x-2">
               <Plus className="w-4 h-4" />
               <span>Add Menu</span>
@@ -1306,6 +1313,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
   const renderFeedbackTab = () => (
     <div className="space-y-6">
       <h3 className="text-xl font-semibold text-gray-900">Feedback Settings</h3>
+      <hr></hr>
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
           Admin Email Address
@@ -1359,7 +1367,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
             Archived: {contentData.reviews.filter(r => r.status === 'archived').length}
           </div>
         </div>
-
+        <hr></hr>
         <div className="space-y-4">
           {contentData.reviews.map((review) => (
             <div key={review.id} className={`border rounded-lg p-4 ${review.status === 'archived' ? 'bg-gray-50 opacity-75' : 'bg-white'}`}>
@@ -1778,6 +1786,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
     return (
       <div className="space-y-6">
         <h3 className="text-xl font-semibold text-gray-900">Change Admin Password</h3>
+        <hr></hr>
 
         <form onSubmit={handlePasswordChange} className="space-y-4 max-w-md">
           <div>
@@ -1848,6 +1857,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
   const renderReservationTab = () => (
     <div className="space-y-6">
       <h3 className="text-xl font-semibold text-gray-900">Reservation Settings</h3>
+      <hr></hr>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -1924,50 +1934,84 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
   ];
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl w-full max-w-6xl h-5/6 flex relative">
-        {/* Sidebar */}
-        <div className="w-64 bg-gray-50 rounded-l-xl border-r">
-          <div className="p-6 border-b">
-            <h2 className="text-xl font-bold text-gray-900">Admin Dashboard</h2>
-          </div>
-          <nav className="p-4">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-md mb-2 transition-colors ${
-                  activeTab === tab.id
-                    ? 'bg-amber-100 text-amber-700 border border-amber-200'
-                    : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                {tab.icon}
-                <span>{tab.label}</span>
-              </button>
-            ))}
-          </nav>
-          <div className="absolute bottom-4 left-4">
-            <button
-              onClick={onClose}
-              className="flex items-center space-x-2 text-gray-600 hover:text-gray-800"
-            >
-              <X className="w-4 h-4" />
-              <span>Close</span>
-            </button>
-          </div>
+    <div className="fixed inset-0 z-[9999] bg-black bg-opacity-50 z-50 flex items-center justify-center">
+      <div className="bg-white w-full h-[100dvh] md:h-5/6 md:max-w-6xl md:rounded-xl relative overflow-hidden flex flex-col">
+
+        {/* ===== Mobile Header ===== */}
+        <div className="md:hidden sticky top-0 z-50 flex items-center justify-between px-4 py-3 border-b bg-white">
+          <button onClick={() => setIsSidebarOpen(true)}>☰</button>
+          <h2 className="font-semibold text-lg">Admin Dashboard</h2>
+          <button onClick={onClose}>✕</button>
         </div>
 
-        {/* Main Content */}
-        <div className="flex-1 p-6 overflow-y-auto">
-          {activeTab === 'home' && renderHomeTab()}
-          {activeTab === 'menu' && renderMenuTab()}
-          {activeTab === 'catering' && renderCateringTab()}
-          {activeTab === 'feedback' && renderFeedbackTab()}
-          {activeTab === 'reviews' && renderReviewsTab()}
-          {activeTab === 'gallery' && renderGalleryTab()}
-          {activeTab === 'reservation' && renderReservationTab()}
-          {activeTab === 'password' && renderPasswordTab()}
+        {/* ===== Sidebar Overlay (Mobile) ===== */}
+        {isSidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black bg-opacity-40 z-40 md:hidden"
+            onClick={() => setIsSidebarOpen(false)}
+          />
+        )}
+
+        <div className="flex flex-1 relative min-h-0">
+
+          {/* ===== Sidebar ===== */}
+          <div
+            className={`
+              fixed md:static z-50 md:z-auto
+              top-0 left-0 h-full
+              w-64 bg-gray-50 border-r
+              transform transition-transform duration-300
+              ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+              md:translate-x-0
+            `}
+          >
+            <div className="p-6 border-b">
+              <h2 className="text-xl font-bold text-gray-900">Admin Dashboard</h2>
+            </div>
+
+            <nav className="p-4">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => {
+                    setActiveTab(tab.id);
+                    setIsSidebarOpen(false); // 👈 auto-close on mobile
+                  }}
+                  className={`w-full flex items-center space-x-3 px-4 py-3 rounded-md mb-2 transition-colors ${
+                    activeTab === tab.id
+                      ? 'bg-amber-100 text-amber-700 border border-amber-200'
+                      : 'text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  {tab.icon}
+                  <span>{tab.label}</span>
+                </button>
+              ))}
+            </nav>
+
+            <div className="absolute bottom-4 left-4">
+              <button
+                onClick={onClose}
+                className="flex items-center space-x-2 text-gray-600 hover:text-gray-800"
+              >
+                <X className="w-4 h-4" />
+                <span>Close</span>
+              </button>
+            </div>
+          </div>
+
+          {/* ===== Main Content ===== */}
+          <div className="flex-1 min-h-0 p-4 md:p-6 overflow-y-auto mt-12 md:mt-0">
+            {activeTab === 'home' && renderHomeTab()}
+            {activeTab === 'menu' && renderMenuTab()}
+            {activeTab === 'catering' && renderCateringTab()}
+            {activeTab === 'feedback' && renderFeedbackTab()}
+            {activeTab === 'reviews' && renderReviewsTab()}
+            {activeTab === 'gallery' && renderGalleryTab()}
+            {activeTab === 'reservation' && renderReservationTab()}
+            {activeTab === 'password' && renderPasswordTab()}
+          </div>
+
         </div>
       </div>
     </div>

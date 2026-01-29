@@ -107,10 +107,10 @@ export default function CateringDialog({ onClose }: { onClose: () => void }) {
                   >
                     <div>
                       <p class="item-name">${item.name}
-                        ${item.qty > 0 ? `<span class="item-qty">(${item.qty} ${item.qtyUnit})</span>` : ''}
+                        ${parseFloat(item.qty) > 0 ? `<span class="item-qty">(${item.qty} ${item.qtyUnit})</span>` : ''}
                       </p>
                       ${(item.description && item.description.length > 0) ? `
-                      <p class="item-description">${item.description}</p>` : ''}
+                      <p class="item-description"><pre class='item-description-pre'>${item.description}</pre></p>` : ''}
                     </div>
                     ${item.price > 0 ? `<div class="item-price">
                       ₹&nbsp;${item.price}
@@ -131,7 +131,11 @@ export default function CateringDialog({ onClose }: { onClose: () => void }) {
             </div>`;
       }
 
-      htmlText = htmlText.replaceAll("{{cat_description}}", cateringData.description);
+      var catDescription = cateringData.description;
+
+      catDescription = "<pre class='cat-description-pre'>" + catDescription + "</pre>";
+
+      htmlText = htmlText.replaceAll("{{cat_description}}", catDescription);
       htmlText = htmlText.replaceAll("{{cat_menu_items}}", menuItems);
       htmlText = htmlText.replaceAll("{{cat_notes}}", notes);
 
@@ -206,7 +210,7 @@ export default function CateringDialog({ onClose }: { onClose: () => void }) {
         </div>
 
         {/* DESCRIPTION */}
-        <div className="bg-amber-50 border-l-4 border-amber-500 p-4 mb-6 font-bold text-gray-700 whitespace-pre-line">
+        <div className="bg-amber-50 border-l-4 border-amber-500 p-4 mb-6 text-gray-800 whitespace-pre-line">
           {cateringData.description}
         </div>
 
@@ -227,10 +231,12 @@ export default function CateringDialog({ onClose }: { onClose: () => void }) {
                     <div>
                       <p className="font-medium">
                         {item.name}
-                        <span className="text-sm text-gray-500 mx-2">({item.qty} {item.qtyUnit})</span>
+                        {parseFloat(item.qty) > 0 && (<span className="text-sm text-gray-500 mx-2">({item.qty} {item.qtyUnit})</span>)}
                       </p>
                       {item.description && item.description.length > 0 && (
-                        <p className='text-sm text-gray-600'>{item.description}</p>
+                        <p className='text-sm text-gray-600'>
+                          <pre className='item-description-pre'>{item.description}</pre>
+                        </p>
                       )}
                     </div>
                     {item.price > 0 && (<div className="font-semibold text-gray-800">

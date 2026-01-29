@@ -37,7 +37,7 @@
         }
         
         .header {
-            background: linear-gradient(135deg, #d97706 0%, #f59e0b 50%, #fbbf24 100%);
+            background: linear-gradient(135deg, #005e00 0%, #005e009e 50%, #005e007a 100%);
             color: white;
             padding: 2rem 1.5rem;
             text-align: center;
@@ -91,6 +91,13 @@
             z-index: 1;
         }
         
+		.cat-description-pre {
+			text-wrap: auto;
+			font-family: inherit;
+			font-size: 0.9rem;
+			opacity: 0.9;
+		}
+		
         .cat-badge {
             background: rgba(255,255,255,0.2);
             backdrop-filter: blur(10px);
@@ -116,22 +123,33 @@
         
         .section-title {
             font-family: 'Playfair Display', serif;
-            font-size: 1.4rem;
+            font-size: 1.6rem;
             font-weight: 600;
-            color: #d97706;
+            color: #005e00;
             margin-bottom: 1rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
+		
+		.section-content {
+			background: #f8f9fa;
+			border-radius: 10px;
+			padding: 1.2rem;
+			border-left: 4px solid #005e003b;
+			margin-bottom: 1rem;
+			color: #374151;
+			font-size: 0.9rem;
+			line-height: 1.6;
+		}
 
 		.menu-category-title {
-			font-size: 1.5rem;
+			font-size: 1.4rem;
 			font-weight: 600;
 			line-height: 1.75rem;
 			border-bottom: dotted 1px;
-			color: rgb(180, 83, 9);
-			background-color: #f59e0b17;
+			color: #005e00;
+			background-color: #005e0012;
 			padding: 4px 8px;
 			margin: 10px 0px;
 			border-top-right-radius: 10px;
@@ -146,8 +164,8 @@
 			display: flex;
 			justify-content: space-between;
 			background: #f8f9fa;
-			border: dotted 1px #f59e0b;
-			border-left: solid 4px #f59e0b;
+			border: dotted 1px #005e003b;
+			border-left: solid 4px #005e003b;
 			border-radius: 10px;
 			margin-bottom: 0.5rem;
 			padding-top: 0.5rem;
@@ -170,6 +188,12 @@
 		}
 		.item-description {
 			line-height: 1.5;
+		}		
+		.item-description-pre {
+			text-wrap: auto;
+			font-family: inherit;
+			font-size: 0.9rem;
+			opacity: 0.9;
 		}
 		.item-price {
 		}
@@ -197,7 +221,7 @@
         }
         
         .contact-section {
-            background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+            background: linear-gradient(135deg, #005e00 0%, #005e009e 100%);
             color: white;
             padding: 2rem 1.5rem;
             text-align: center;
@@ -227,7 +251,7 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 1rem;
-            margin: 1.5rem 0;
+            margin: 0 0 1.5rem 0;
         }
         
         .info-item {
@@ -245,12 +269,12 @@
         
         .info-value {
             font-weight: 600;
-            color: #fbbf24;
+            color: #fff;
         }
         
         .warning-box {
-            background: #fef2f2;
-            border: 2px solid #fca5a5;
+            background: #005e0012;
+            border: 2px solid #005e003b;
             border-radius: 10px;
             padding: 1rem;
             margin: 1rem 0;
@@ -315,8 +339,8 @@
         }
         
         .footer {
-            background: #111827;
-            color: #9ca3af;
+            background: #005e00;
+            color: #ffffff87;
             padding: 1.5rem;
             text-align: center;
             font-size: 0.8rem;
@@ -361,7 +385,7 @@
             }
             
             .header {
-                background: linear-gradient(135deg, #d97706 0%, #f59e0b 50%, #fbbf24 100%) !important;
+                background: linear-gradient(135deg, #005e00 0%, #005e009e 50%, #005e007a 100%) !important;
                 color: white !important;
             }
             
@@ -371,13 +395,15 @@
             }
             
             .contact-section {
-                background: linear-gradient(135deg, #1f2937 0%, #374151 100%) !important;
+                background: linear-gradient(135deg, #005e00 0%, #005e009e 100%) !important;
                 color: white !important;
             }
             
             .menu-item {
                 background: #f8f9fa !important;
-                border-left: 4px solid #f59e0b !important;
+                border-left: 4px solid #005e003b !important;
+				break-inside: avoid;
+				page-break-inside: avoid
             }
             
             .highlight-box {
@@ -386,8 +412,8 @@
             }
             
             .warning-box {
-                background: #fef2f2 !important;
-                border: 2px solid #fca5a5 !important;
+                background: #005e0012 !important;
+                border: 2px solid #005e003b !important;
             }
             
             .payment-info {
@@ -405,8 +431,8 @@
             }
             
             .footer {
-                background: #111827 !important;
-                color: #9ca3af !important;
+                background: #005e00 !important;
+                color: #ffffff87 !important;
             }
         }
     </style>
@@ -423,7 +449,7 @@
             <h1 class="title">Ba's Catering</h1>
 			
             <div class="cat-badge">
-				<div class="cat-description">{{cat_description}}</div>
+				<div class="cat-description">We offer customized home-style catering for events and gatherings.</div>
             </div>
         </div>
 
@@ -434,14 +460,8 @@
                 <h2 class="section-title">
                     💫 Ba's Vision
                 </h2>
-                <div style="background: #f8f9fa; border-radius: 10px; padding: 1.2rem; border-left: 4px solid #f59e0b; margin-bottom: 1rem;">
-                    <p style="color: #374151; font-size: 0.9rem; line-height: 1.6; margin-bottom: 0.8rem;">
-                        My primary goal is to create a unique, intimate, and high-quality food.
-                    </p>
-                    <p style="color: #374151; font-size: 0.9rem; line-height: 1.6;">
-                        Through this venture, I also hope to share my culinary vision by presenting a variety of 
-                        cuisines and dishes that are rarely found in the restaurants of Jamnagar.
-                    </p>
+                <div class="section-content">
+                    {{cat_description}}
                 </div>
             </div>
 
@@ -484,11 +504,11 @@
                 </div>
             </div>
             
-            <div style="background: rgba(255,255,255,0.1); border-radius: 10px; padding: 1rem; margin: 1rem 0;">
-                <div style="color: #fbbf24; font-weight: 600; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+            <div class="info-item">
+                <div class="info-label">
                     📍 Address
                 </div>
-                <div style="font-size: 0.9rem; line-height: 1.4;">
+                <div class="info-label" style="font-size: 0.9rem; line-height: 1.4;">
                     B-10, Vision Towers<br>
                     Opp. Satya Sai School<br>
                     Palace Road, Jamnagar - 361 008
