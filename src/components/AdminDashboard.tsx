@@ -650,6 +650,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                     className="w-full px-3 py-2 border border-gray-300 rounded-md"
                   />
                 </div>
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
                   <input
@@ -659,6 +660,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                     className="w-full px-3 py-2 border border-gray-300 rounded-md"
                   />
                 </div>
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Price per Person</label>
                   <input
@@ -668,6 +670,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                     className="w-full px-3 py-2 border border-gray-300 rounded-md"
                   />
                 </div>
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Max Persons</label>
                   <input
@@ -1008,19 +1011,33 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
       let menus = [...(cateringData.menus || [])];
 
       if (editingCateringItem) {
-        menus = menus.filter(m => m.id !== editingCateringItem.id);
-      }
+        //menus = menus.filter(m => m.id !== editingCateringItem.id);
 
-      menus.push({
-        id: editingCateringItem?.id || `c-${Date.now()}`,
-        mealType: cateringForm.mealType,
-        name: cateringForm.name,
-        description: cateringForm.description,
-        qty: cateringForm.qty,
-        qtyUnit: cateringForm.qtyUnit,
-        price: Number(cateringForm.price),
-        isActive: cateringForm.isActive
-      });
+        for (var i = 0 ; i < menus.length; i++) {
+          if (menus[i].id == editingCateringItem?.id) {
+            menus[i].mealType = cateringForm.mealType;
+            menus[i].name = cateringForm.name;
+            menus[i].description = cateringForm.description;
+            menus[i].qty = cateringForm.qty;
+            menus[i].qtyUnit = cateringForm.qtyUnit;
+            menus[i].price = Number(cateringForm.price);
+            menus[i].isActive = cateringForm.isActive;
+
+            break;
+          }
+        }
+      } else {
+        menus.push({
+          id: editingCateringItem?.id || `c-${Date.now()}`,
+          mealType: cateringForm.mealType,
+          name: cateringForm.name,
+          description: cateringForm.description,
+          qty: cateringForm.qty,
+          qtyUnit: cateringForm.qtyUnit,
+          price: Number(cateringForm.price),
+          isActive: cateringForm.isActive
+        });
+      }
 
       save({ ...cateringData, menus });
       setShowCateringItemModal(false);
@@ -1137,7 +1154,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                     {!m.isActive && (<X size={18} className='text-red-700'/>)}
                     <span className="px-1">{m.name} ({m.qty} {m.qtyUnit}) - ₹&nbsp;{m.price}</span>
                   </div>
-                  <span className="space-x-2">
+                  <span className="space-x-2 min-w-9">
                     <button onClick={() => openEdit(m)}><Edit size={14} /></button>
                     <button onClick={() => deleteItem(m.id)}><Trash2 size={14} /></button>
                   </span>
@@ -1157,7 +1174,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
               <li key={i}>
                 <div className="flex justify-between border-b py-1">
                   <span>{n.note}</span>
-                  <span className="space-x-2">
+                  <span className="space-x-2 min-w-9">
                     <button onClick={() => { setEditingNoteIndex(i); setNoteText(n.note); }}><Edit size={14} /></button>
                     <button onClick={() => deleteNote(i)}><Trash2 size={14} /></button>
                   </span>
@@ -1233,9 +1250,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                     />
                     <span>Is Active</span>
                   </label>
-                </div>
+                </  div>
 
-                <div className="col-span-2">
+                <div className="col-span-full">
                   <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
                   <input
                     type="text"
@@ -1245,7 +1262,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                   />
                 </div>
 
-                <div className="col-span-2">
+                <div className="col-span-full">
                   <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
                   <textarea
                     className="w-full px-3 py-2 border border-gray-300 rounded-md"
